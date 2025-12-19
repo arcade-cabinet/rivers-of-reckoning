@@ -13,7 +13,7 @@ def shop_menu(stdscr, player):
             stdscr.addstr(
                 5 + idx,
                 4,
-                f"{idx+1}. {item['name']} ({item['cost']} gold): {item['desc']}{owned}",
+                f"{idx + 1}. {item['name']} ({item['cost']} gold): {item['desc']}{owned}",
             )
         stdscr.addstr(5 + len(SHOP_ITEMS), 4, "0. Exit shop")
         stdscr.refresh()

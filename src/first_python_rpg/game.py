@@ -1,3 +1,9 @@
+"""Game module for Rivers of Reckoning.
+
+This module provides the main Game class that orchestrates the RPG gameplay
+using pygame-ce via the Engine abstraction layer.
+"""
+
 import random
 import asyncio
 from .player import Player
@@ -5,8 +11,8 @@ from .enemy import Enemy
 from .map_data import MAP_SIZE, EVENT_TYPES
 from .engine import Engine
 
-# Remove Pyxel specific enhancements imports for now or mock them
-# from .pyxel_enhancements import ...
+# Event message display duration (frames at 60 FPS = 3 seconds)
+EVENT_MESSAGE_DURATION = 180
 
 
 class Game:
@@ -55,16 +61,12 @@ class Game:
         self.event_message = None
         self.event_timer = 0
         self.boss_data = None  # For boss battle state
-        self.enemies = []
-        self.map = None
-        self.event_message = None
-        self.event_timer = 0
 
         # UI state
         self.show_quest_ui = False
         self.show_weather_ui = False
 
-        # Colors (using Pyxel's 16-color palette mapped in Engine)
+        # Colors (using 16-color palette mapped in Engine)
         self.colors = {
             "bg": 0,  # Black
             "text": 7,  # White
@@ -211,7 +213,7 @@ class Game:
             if self.features["random_events"] and random.random() < 0.2:
                 event = random.choice(EVENT_TYPES)
                 self.event_message = event["desc"]
-                self.event_timer = 180  # 3 seconds at 60 FPS
+                self.event_timer = EVENT_MESSAGE_DURATION
                 if event["effect"]:
                     event["effect"](self.player)
                 if self.player.health <= 0:
@@ -224,7 +226,7 @@ class Game:
                 self.player.take_damage(dmg)
 
                 self.event_message = f"Enemy Encounter! Took {dmg} damage from a {enemy.name}."
-                self.event_timer = 180
+                self.event_timer = EVENT_MESSAGE_DURATION
                 if self.player.health <= 0:
                     self.state = "gameover"
 

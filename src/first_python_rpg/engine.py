@@ -40,14 +40,14 @@ class Engine:
 
         return main_loop()
 
-    # Pyxel-like compatibility layer (optional, or we refactor callers)
+    # Input handling compatibility layer
     def btnp(self, key):
         # Very basic key check, not exactly btnp (pressed this frame)
         # For true btnp we need to track state.
         # But standard get_pressed is often enough or event loop.
         # Let's use event loop in update if possible, but Game expects checking state.
         # We'll rely on pygame.key.get_pressed() for now as 'btn' and maybe implement 'btnp' later.
-        # Mapping Pyxel keys to Pygame keys
+        # Map key names to pygame key constants
         keys = pygame.key.get_pressed()
         if key == "up":
             return keys[pygame.K_UP]

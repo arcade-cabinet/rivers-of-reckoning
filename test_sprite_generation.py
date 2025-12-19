@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""
-Test script to verify sprite procedural generation works correctly
-"""
+"""Test script to verify sprite procedural generation works correctly."""
 
 
 def test_sprite_functions():
-    """Test that all sprite functions can be imported and called"""
+    """Test that all sprite functions can be imported and called."""
     print("Testing sprite procedural generation...")
 
     try:
@@ -23,9 +21,9 @@ def test_sprite_functions():
             if not callable(sprite_func):
                 raise ValueError(f"Sprite {name} is not callable")
 
-            # Test calling the sprite function (will handle pyxel not initialized gracefully)
+            # Test calling the sprite function with None engine (graceful handling)
             try:
-                sprite_func(10, 10, 8, 8)
+                sprite_func(None, 10, 10, 8, 8)
                 print(f"✓ {name} sprite function works")
             except Exception as e:
                 print(f"✗ {name} sprite function failed: {e}")
@@ -37,22 +35,21 @@ def test_sprite_functions():
                 raise ValueError(f"Boss sprite {boss_id} is not callable")
 
             try:
-                boss_func(10, 10)
+                boss_func(None, 10, 10)
                 print(f"✓ Boss sprite {boss_id} function works")
             except Exception as e:
                 print(f"✗ Boss sprite {boss_id} function failed: {e}")
                 return False
 
         print("✓ All sprite functions are working correctly")
-        return True
 
     except Exception as e:
         print(f"✗ Sprite test failed: {e}")
-        return False
+        raise
 
 
 def test_game_components():
-    """Test that game components work with new sprites"""
+    """Test that game components work with new sprites."""
     print("\nTesting game components...")
 
     try:
@@ -62,9 +59,9 @@ def test_game_components():
         print("✓ Game class imported successfully")
 
         # Test map import
-        from first_python_rpg.map import MapPyxel
+        from first_python_rpg.map import Map
 
-        print("✓ MapPyxel class imported successfully")
+        print("✓ Map class imported successfully")
 
         # Test boss import
         from first_python_rpg.boss import (
@@ -76,15 +73,14 @@ def test_game_components():
         print("✓ Boss system imported successfully")
 
         print("✓ All game components imported successfully")
-        return True
 
     except Exception as e:
         print(f"✗ Game component test failed: {e}")
-        return False
+        raise
 
 
 def main():
-    """Run all tests"""
+    """Run all tests."""
     print("Running sprite procedural generation tests...")
 
     success = True

@@ -1,8 +1,14 @@
+"""Procedural enemy generation for Rivers of Reckoning.
+
+This module provides procedural generation of enemies with varied
+stats, types, and difficulty scaling based on player level.
+"""
+
 import random
 
 
 class ProceduralEnemyGenerator:
-    """Procedural enemy generation for Pyxel"""
+    """Procedural enemy generation system."""
 
     def __init__(self):
         self.enemy_types = [
@@ -20,8 +26,8 @@ class ProceduralEnemyGenerator:
             "Minotaur",
         ]
         self.color_variants = [
-            8,  # Red
-            9,  # Orange
+            8,   # Red
+            9,   # Orange
             10,  # Yellow
             11,  # Green
             12,  # Blue
@@ -31,7 +37,14 @@ class ProceduralEnemyGenerator:
         ]
 
     def generate_enemy(self, level=1):
-        """Generate a procedural enemy with stats based on level"""
+        """Generate a procedural enemy with stats based on level.
+
+        Args:
+            level: The difficulty level (affects HP and damage)
+
+        Returns:
+            A dictionary with enemy attributes.
+        """
         base_type = random.choice(self.enemy_types)
         color = random.choice(self.color_variants)
 
@@ -49,7 +62,14 @@ class ProceduralEnemyGenerator:
         }
 
     def generate_boss(self, level=5):
-        """Generate a boss enemy"""
+        """Generate a boss enemy.
+
+        Args:
+            level: The boss difficulty level
+
+        Returns:
+            A dictionary with boss attributes.
+        """
         boss_types = ["Dragon", "Minotaur", "Demon Lord", "Lich King"]
         boss_type = random.choice(boss_types)
 
@@ -64,17 +84,17 @@ class ProceduralEnemyGenerator:
         }
 
 
-# Legacy function stubs to maintain compatibility
+# Legacy function stubs to maintain API compatibility
 def load_enemy_spritesheet(path, sprite_size):
-    """Legacy function - not used in Pyxel version"""
+    """Legacy function - not used in pygame-ce version."""
     return []
 
 
 def generate_enemy_sprite(enemy_sprites, overlays, variant):
-    """Legacy function - not used in Pyxel version"""
+    """Legacy function - not used in pygame-ce version."""
     return None
 
 
 def generate_procedural_enemy_sprite(base_surface, color_tint=None, overlay=None, overlay_alpha=128):
-    """Legacy function - not used in Pyxel version"""
+    """Legacy function - not used in pygame-ce version."""
     return None

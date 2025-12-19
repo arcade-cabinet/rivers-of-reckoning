@@ -61,18 +61,42 @@ def test_enemy_init_and_alive():
 
 # Map logic
 def test_map_walkable():
-    m = Map()
-    # Not all tiles are walkable in a generated map (walls, rocks, water)
-    # We should just check that is_walkable returns a boolean
-    for y in range(m.size):
-        for x in range(m.size):
-            assert isinstance(m.is_walkable(x, y), bool)
+    """Test that map walkability is correctly determined by tile type."""
+    # Test fixed map (procedural=False)
+    m = Map(procedural=False)
+    assert m.procedural is False
 
-    m = Map(procedural=True)
     for y in range(m.size):
         for x in range(m.size):
-            if m.grid[y][x] == "#":
-                assert not m.is_walkable(x, y)
+            tile = m.grid[y][x]
+            walkable = m.is_walkable(x, y)
+
+            # Verify walkability matches tile type
+            if tile in ("o", "#", "T", "R"):
+                assert not walkable, f"Tile '{tile}' at ({x},{y}) should not be walkable"
+            else:
+                assert walkable, f"Tile '{tile}' at ({x},{y}) should be walkable"
+
+    # Test procedural map
+    m_proc = Map(procedural=True)
+    assert m_proc.procedural is True
+
+    for y in range(m_proc.size):
+        for x in range(m_proc.size):
+            tile = m_proc.grid[y][x]
+            walkable = m_proc.is_walkable(x, y)
+
+            # Verify walkability matches tile type
+            if tile in ("o", "#", "T", "R"):
+                assert not walkable, f"Tile '{tile}' at ({x},{y}) should not be walkable"
+            else:
+                assert walkable, f"Tile '{tile}' at ({x},{y}) should be walkable"
+
+    # Test out-of-bounds returns False
+    assert not m.is_walkable(-1, 0)
+    assert not m.is_walkable(0, -1)
+    assert not m.is_walkable(m.size, 0)
+    assert not m.is_walkable(0, m.size)
 
 
 # Enemy encounter simulation

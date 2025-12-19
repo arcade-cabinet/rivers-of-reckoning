@@ -1,24 +1,34 @@
-import random
-from .map_data import MAP_SIZE
+"""Map module for Rivers of Reckoning.
 
-# Pyxel color palette mapping for terrain (keys are Pyxel color indices for now, reused in Engine)
-TILE_COLORS = {
-    ".": 4,  # dirt (brown)
-    "~": 10,  # sand (light green - closest to sand)
-    "#": 5,  # stone (dark gray)
-    "^": 3,  # grass (green)
-    "o": 12,  # water (blue)
-    "T": 11,  # tree (light green)
-    "R": 6,  # rock (light gray)
-}
+This module provides the Map class for terrain generation and rendering
+using the pygame-ce Engine abstraction.
+"""
+
+import random
+from .map_data import MAP_SIZE, TILE_COLORS
 
 
 class Map:
+    """Game map with terrain generation and rendering.
+
+    Attributes:
+        size: The map size (default 11x11)
+        procedural: Whether the map was procedurally generated
+        grid: 2D list of tile characters
+        tile_size: Calculated tile size based on screen dimensions
+    """
+
     def __init__(self, procedural=False):
+        """Initialize the map.
+
+        Args:
+            procedural: If True, generates a random procedural map.
+                       If False, generates a balanced fixed map.
+        """
         self.size = MAP_SIZE
         self.procedural = procedural
         self.grid = self.generate_map(procedural)
-        self.tile_size = 256 // MAP_SIZE  # Calculate tile size based on screen size
+        self.tile_size = 256 // MAP_SIZE
 
     def generate_map(self, procedural=False):
         """Generate the game map.
@@ -99,14 +109,27 @@ class Map:
         return grid
 
     def is_walkable(self, x, y):
-        """Check if a position is walkable"""
+        """Check if a position is walkable.
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+
+        Returns:
+            True if the tile can be walked on, False otherwise.
+        """
         if 0 <= x < self.size and 0 <= y < self.size:
             return self.grid[y][x] not in ("o", "#", "T", "R")
         return False
 
     def draw(self, engine):
-        """Draw the map using Engine"""
-        # from .map_data import SPRITES
+        """Draw the map using Engine.
+
+        Args:
+            engine: The Engine instance for rendering
+        """
+        if engine is None:
+            return
 
         for y in range(self.size):
             for x in range(self.size):
@@ -120,18 +143,10 @@ class Map:
                 # Draw base tile
                 engine.rect(px, py, self.tile_size, self.tile_size, color)
 
-                # Procedural sprites replacement (simple rectangles for now to satisfy Pygame conversion)
-                # In Pyxel version, it called SPRITES functions which used pyxel directly.
-                # Since we replaced Pyxel with Engine, we should call engine methods.
-                # However, SPRITES functions in map_data.py still import pyxel.
-                # We need to refactor map_data.py or just draw simple shapes here for now.
-
-                # Simple visual indicators
+                # Add visual indicators for special tiles
                 if tile == "T":  # Tree
-                    # Green circle/rect
                     engine.rect(px + 2, py + 2, self.tile_size - 4, self.tile_size - 4, 11)
                 elif tile == "R":  # Rock
-                    # Gray rect
                     engine.rect(px + 2, py + 2, self.tile_size - 4, self.tile_size - 4, 13)
                 elif tile == "o":  # Water
                     engine.rect(px + 4, py + 4, 2, 2, 12)
@@ -139,7 +154,13 @@ class Map:
                     engine.rect(px + 4, py + 4, 2, 2, 5)
 
     def move_player(self, player, dx, dy):
-        """Move player with map constraints"""
+        """Move player with map constraints.
+
+        Args:
+            player: The Player instance
+            dx: X direction (-1, 0, or 1)
+            dy: Y direction (-1, 0, or 1)
+        """
         if player.confused > 0 and random.random() < 0.5:
             dx, dy = random.choice([(0, 1), (0, -1), (1, 0), (-1, 0)])
 

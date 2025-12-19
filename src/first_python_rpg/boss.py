@@ -88,7 +88,7 @@ def update_boss_battle(game):
             bdmg = random.randint(2, 4) + boss_strength
             player.take_damage(bdmg)
             player.take_damage(bdmg // 2)
-            boss_data["message"] += f" Hydra lashes twice! {bdmg} and {bdmg//2} damage!"
+            boss_data["message"] += f" Hydra lashes twice! {bdmg} and {bdmg // 2} damage!"
         elif boss_idx == 1:  # Golem
             boss_data["boss_ability"] = "shielded"
             boss_data["message"] += " Golem shields itself (half damage next turn)!"

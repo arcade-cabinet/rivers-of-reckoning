@@ -1,16 +1,23 @@
+# Render.com deployment configuration for Rivers of Reckoning
+# Builds the game using pygbag for web deployment
+
 services:
   - type: web
     name: first-python-rpg
     env: static
     buildCommand: |
-      pip install pygbag
+      # Install build dependencies
+      pip install pygame-ce pygbag
+      
+      # Install the project package so imports work
+      pip install -e .
+      
+      # Create build directory
       mkdir -p build/web
-      # We just want to package the assets and code.
-      # Pygbag needs a main.py. We have main_web.py, but pygbag expects main.py or folder.
-      # We'll rename main_web.py to main.py in a build step or assume source has it.
-      # But wait, pygbag usually packages the current folder.
-      # Let's assume we run it on the root.
-      # We need to make sure main.py is the async one.
+      
+      # Pygbag expects main.py as the entry point
       cp main_web.py main.py
+      
+      # Build for web using pygbag
       python -m pygbag --build build/web .
     staticPublishPath: ./build/web

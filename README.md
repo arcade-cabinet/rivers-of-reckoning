@@ -1,53 +1,61 @@
-# First Python RPG - Pyxel Edition
+# Rivers of Reckoning
 
-A retro-style RPG game built with Python and Pyxel, featuring procedural generation, modern game mechanics, and a clean library structure.
+A retro-style RPG game built with Python and pygame-ce, featuring procedural generation, modern game mechanics, and web deployment via pygbag.
 
 ## 🎮 Features
 
-- **Retro Aesthetics**: 256x256 pixel art style with 16-color palette
+- **Retro Aesthetics**: 960x960 pixel display with classic 16-color palette
 - **Procedural Generation**: Dynamic maps, enemies, and quests
 - **Modern Game Mechanics**: Weather system, particle effects, and quest system
-- **Enhanced Features**: Procedural dungeons, dynamic quests, and weather effects
-- **Clean Architecture**: Proper Python package structure with Poetry
+- **Web Deployment**: Play in browser via pygbag on GitHub Pages
+- **Cross-Platform**: Desktop (Windows, macOS, Linux) and Web
 
 ## 🛠️ Installation
 
 ### Prerequisites
-```bash
-# Install Python 3.8+
-# Install Poetry (recommended)
-curl -sSL https://install.python-poetry.org | python3 -
 
-# For Ubuntu/Debian (required for Pyxel)
-sudo apt-get install libsdl2-dev
-```
+- Python 3.10 or higher
 
 ### Install Dependencies
-```bash
-# Using Poetry (recommended)
-poetry install
 
+```bash
 # Using pip
-pip install pyxel
+pip install pygame-ce
+
+# For development (includes testing tools)
+pip install -e ".[dev]"
+
+# For web deployment
+pip install -e ".[web]"
 ```
 
 ## 🎮 Running the Game
 
-### Using the CLI
+### Desktop
+
 ```bash
-# Run the game
+# Using the CLI
 first-python-rpg
 
 # Or using Python
-python -m src.first_python_rpg.cli
-
-# Or using the simple main.py
 python main.py
+```
+
+### Web
+
+The game is automatically deployed to GitHub Pages via pygbag when changes are pushed to main.
+
+To build locally for web:
+
+```bash
+pip install pygbag
+python -m pygbag --build build/web .
 ```
 
 ## 🎲 Game Features
 
 ### Core Gameplay
+
 - **Player Movement**: Arrow keys to move around the map
 - **Feature Selection**: Choose which game features to enable
 - **Random Events**: Treasure, traps, and encounters
@@ -55,19 +63,26 @@ python main.py
 - **Difficulty Levels**: Easy and Hard modes
 
 ### Enhanced Features
-- **Weather System**: Dynamic weather effects (rain, snow, fog, clear)
+
+- **Procedural Dungeons**: Toggle between fixed and procedurally generated maps
+- **Weather System**: Dynamic weather effects
 - **Quest System**: Procedural quest generation with rewards
 - **Particle Effects**: Visual enhancements and effects
-- **Procedural Dungeons**: Randomly generated dungeon levels
-- **Day/Night Cycle**: Time-based gameplay mechanics
 
 ## 🎮 Controls
 
 - **Arrow Keys**: Move player
-- **SPACE**: Select/Confirm
+- **SPACE**: Toggle features / Select
 - **ENTER**: Start game
-- **ESC**: Pause/Resume
-- **Q**: Quit to menu
+- **ESC**: Pause / Resume / Quit
+- **Q**: Quit to menu (when paused)
+- **W**: Toggle weather display
+
+### Boss Battles
+
+- **A**: Attack
+- **S**: Cast spell
+- **ESC**: Flee from battle
 
 ## 📁 Project Structure
 
@@ -76,6 +91,7 @@ python main.py
 │   └── first_python_rpg/
 │       ├── __init__.py          # Package initialization
 │       ├── cli.py               # CLI entry point
+│       ├── engine.py            # Pygame-ce abstraction layer
 │       ├── game.py              # Main game class
 │       ├── player.py            # Player logic
 │       ├── enemy.py             # Enemy logic
@@ -84,81 +100,85 @@ python main.py
 │       ├── boss.py              # Boss encounters
 │       ├── shop.py              # Shop system
 │       ├── procedural_enemies.py # Procedural enemy generation
-│       ├── pyxel_enhancements.py # Enhanced features
 │       └── utils.py             # Utility functions
-├── main.py                      # Simple entry point
-├── test_library_structure.py    # Library tests
-├── test_pyxel_basic.py         # Basic functionality tests
-├── pyproject.toml              # Poetry configuration
-└── README.md                   # This file
+├── main.py                      # Desktop entry point
+├── main_web.py                  # Web (pygbag) entry point
+├── pyproject.toml               # Project configuration (Hatch)
+└── README.md                    # This file
 ```
 
 ## 🧪 Testing
 
 ### Run Tests
-```bash
-# Test library structure
-python test_library_structure.py
 
-# Test basic functionality
-python test_pyxel_basic.py
+```bash
+# Run all tests
+pytest
+
+# Run specific test file
+pytest test_game_logic.py
+
+# Run with verbose output
+pytest -v
 ```
 
 ### Test Coverage
+
 - ✅ Library structure and imports
-- ✅ Player and enemy creation
+- ✅ Player movement and damage
 - ✅ Map generation and walkability
-- ✅ Procedural enemy generation
-- ✅ Game object initialization
+- ✅ Procedural vs fixed maps
+- ✅ Feature flag simulation
+- ✅ Game state transitions
 
 ## 🔧 Development
 
 ### Package Installation
+
 ```bash
 # Install in development mode
-poetry install
+pip install -e ".[dev]"
 
 # Build package
-poetry build
+python -m build
 
 # Install from source
 pip install -e .
 ```
 
 ### Architecture
-- **Clean Library Structure**: Proper Python package with src/ layout
-- **Pyxel Framework**: Modern retro game engine
+
+- **Engine Abstraction**: Pygame-ce wrapped for easy game development
+- **Async Support**: pygbag-compatible async main loop
 - **Modular Design**: Separated concerns with clear interfaces
-- **Event System**: Efficient event handling and state management
+- **Feature Flags**: Toggle game features at runtime
 
-## 🎯 Game Modes
+## 🌐 Web Deployment
 
-### Feature Selection
-Choose which features to enable:
-- **Random Events**: Treasure chests, traps, and special encounters
-- **Difficulty Levels**: Easy (10 HP) or Hard (5 HP)
-- **Enemy Encounters**: Battle system with various creatures
-- **Procedural Dungeons**: Randomly generated dungeon levels
-- **Dynamic Quests**: Procedural quest system with rewards
-- **Weather System**: Environmental effects and atmosphere
-- **Particle Effects**: Visual enhancements and effects
+The game deploys to GitHub Pages using pygbag:
+
+1. Push to main branch triggers the web-deployment workflow
+2. pygbag compiles Python to WebAssembly
+3. Static site is deployed to GitHub Pages
+
+### Render.com Deployment
+
+A `render.yaml` blueprint is provided for Render.com static site hosting.
 
 ## 📈 Technical Details
 
-### Pyxel Framework Benefits
-- **Resolution**: Optimized 256x256 pixel art style
-- **Color Palette**: 16-color retro aesthetic
-- **Performance**: Efficient 2D rendering
-- **Input**: Simplified input handling
-- **Audio**: Built-in sound system support
-- **Cross-platform**: Works on Windows, macOS, and Linux
+### Technology Stack
 
-### Library Features
-- **Poetry Integration**: Modern Python packaging
-- **CLI Entry Point**: Easy installation and execution
-- **Modular Architecture**: Clean separation of concerns
-- **Extensible Design**: Easy to add new features
-- **Type Safety**: Clean interfaces and data structures
+- **pygame-ce**: Modern fork of pygame for cross-platform 2D games
+- **pygbag**: Python to WebAssembly compiler for browser deployment
+- **Hatch**: Modern Python project management
+
+### Game Engine Features
+
+- **Resolution**: 960x960 pixel display (scaled from 256x256 logical)
+- **Color Palette**: 16-color retro aesthetic
+- **Performance**: 60 FPS target with async support
+- **Input**: Keyboard with web touch support planned
 
 ## 📄 License
 
@@ -166,9 +186,9 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🙏 Acknowledgments
 
-- **Pyxel Community**: For the excellent retro framework
+- **pygame-ce Community**: For maintaining the excellent pygame fork
+- **pygbag**: For enabling Python games in the browser
 - **Contributors**: All contributors to the project
-- **Python Community**: For the amazing ecosystem
 
 ---
 

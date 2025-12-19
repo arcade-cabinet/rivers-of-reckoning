@@ -52,13 +52,17 @@ def test_basic_functionality():
 
 
 def test_game_creation():
-    """Test that we can create a game instance"""
-    # Note: This will fail in headless mode due to pyxel.init()
-    # But we can test the import at least
+    """Test that we can create a game instance."""
     from first_python_rpg import Game
 
     print("✓ Game class can be imported")
     assert Game is not None
+
+    # Test headless game creation
+    game = Game(test_mode=True)
+    print("✓ Game created in test mode")
+    assert game is not None
+    assert game.state == "feature_select"
 
 
 def main():
