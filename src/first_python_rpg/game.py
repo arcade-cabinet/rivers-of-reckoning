@@ -423,4 +423,3 @@ class Game:
             "ESC: Quit",
             self.colors["ui"],
         )
-

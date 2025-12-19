@@ -1,147 +1,130 @@
-# AGENTS.md
+# AGENTS.md - Rivers of Reckoning
 
-Comprehensive instructions for AI agents working with this repository.
+> **Instructions for AI agents working on this web-first procedural RPG**
 
-## Agent Types
+## 🌊 Game Identity
 
-| Agent | Best For | Context File |
-|-------|----------|--------------|
-| **Claude** | Complex reasoning, architecture, cross-repo work | `CLAUDE.md` |
-| **Copilot** | Issue kickoffs, targeted fixes, code generation | `.github/copilot-instructions.md` |
-| **Cursor** | IDE-integrated development | `.cursor/rules/*.mdc` |
+**Rivers of Reckoning** is a browser-based roguelike RPG where players explore infinite procedurally generated worlds. The game is designed for **instant web play**—click a link and you're adventuring.
 
-## Before Starting Any Task
+### Mission Statement
 
-### 1. Check Context
+*Create an immersive, endlessly replayable adventure that runs perfectly in any web browser, with no downloads, no installs, and no waiting.*
+
+### Core Experience
+
+- **Exploration**: Discover biomes, secrets, and challenges in an infinite world
+- **Survival**: Manage health, avoid hazards, defeat enemies
+- **Progression**: Grow stronger, unlock abilities, achieve high scores
+- **Sharing**: Share world seeds with friends for the same adventure
+
+## 🎯 Design Principles
+
+| Principle | What It Means |
+|-----------|---------------|
+| **Web-First** | Browser is the primary platform. No desktop-only features. |
+| **Instant Play** | Game loads fast and starts immediately. No setup required. |
+| **Responsive** | Scales perfectly from phone to 4K monitor. |
+| **Procedural** | Everything generated from seeds. Infinite variety. |
+| **Juicy** | Satisfying feedback for every action. |
+| **Accessible** | Simple to learn, clear UI, inclusive design. |
+
+## 🛠 Technology
+
+| Layer | Tech | Why |
+|-------|------|-----|
+| Engine | pygame-ce | Modern pygame fork, great for 2D |
+| Web | pygbag | Compiles Python to WebAssembly |
+| World Gen | opensimplex | Coherent noise for natural terrain |
+| Architecture | esper | Clean ECS pattern |
+
+## 📁 Structure
+
+```
+main.py                      # Single async entry point
+src/first_python_rpg/
+├── engine.py                # Responsive auto-scaling engine
+├── game.py                  # Game loop and state machine
+├── world_gen.py             # Procedural generation
+├── systems.py               # ECS components/processors
+├── map.py                   # Infinite camera-based map
+├── player.py                # Player entity
+├── enemy.py                 # Enemy AI
+└── map_data.py              # Game data/constants
+```
+
+## 🔧 Commands
+
 ```bash
-# Current focus and recent decisions
-cat memory-bank/activeContext.md
-
-# Session progress
-cat memory-bank/progress.md
+python main.py          # Run the game
+pytest -v               # Run tests
+flake8 src/             # Lint code
+python -m pygbag .      # Build for web
+uv lock && uv sync      # Update dependencies
 ```
 
-### 2. Understand the Request
-- Read the issue/PR description completely
-- Check for linked issues or PRs
-- Look for acceptance criteria
+## ✅ Agent Checklist
 
-### 3. Check Existing Patterns
-```bash
-# Recent commits show coding patterns
-git log --oneline -10
+Before making changes:
+- [ ] Understand the web-first constraint
+- [ ] Read recent commits for patterns
+- [ ] Run tests to confirm clean state
 
-# Similar files show conventions
-find . -name "*.py" | head -5 | xargs head -50
-```
+When making changes:
+- [ ] Keep code async-compatible (no blocking)
+- [ ] Test that `python main.py` runs
+- [ ] Ensure all tests pass
+- [ ] Follow conventional commits
 
-## Development Commands
+After changes:
+- [ ] Lint passes
+- [ ] Tests pass
+- [ ] Documentation updated if needed
 
-<!-- These will be overridden by language-specific instructions -->
+## ❌ What NOT to Do
 
-### Testing
-```bash
-# Run tests (check package.json or pyproject.toml for exact command)
-npm test        # Node.js
-uv run pytest   # Python
-go test ./...   # Go
-```
+- **Don't** add desktop-only features (file dialogs, subprocess, etc.)
+- **Don't** use synchronous/blocking patterns
+- **Don't** create multiple entry points (there is ONE `main.py`)
+- **Don't** hardcode content (everything should be procedural)
+- **Don't** break the responsive scaling
 
-### Linting
-```bash
-npm run lint    # Node.js
-uvx ruff check  # Python
-golangci-lint run  # Go
-```
+## 🎨 Visual Style
 
-### Building
-```bash
-npm run build   # Node.js
-uv build        # Python
-go build        # Go
-```
+- **Resolution**: 256x256 logical, auto-scaled
+- **Palette**: 16 retro colors
+- **Style**: Clear pixel art, readable at any size
+- **Feedback**: Visual confirmation for all actions
 
-## Commit Message Format
-
-Use [Conventional Commits](https://www.conventionalcommits.org/):
+## 📝 Commit Format
 
 ```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
+feat(world): add desert biome generation
+fix(combat): correct damage calculation
+docs: update README with new controls
+test: add procedural map variety tests
+chore: update dependencies
 ```
 
-### Types
-- `feat`: New feature (minor version bump)
-- `fix`: Bug fix (patch version bump)
-- `docs`: Documentation only
-- `style`: Formatting, no code change
-- `refactor`: Code restructure, no behavior change
-- `test`: Adding/updating tests
-- `chore`: Maintenance tasks
+## 🔗 Key Files
 
-### Examples
-```bash
-feat(auth): add OAuth2 support
-fix(api): handle null response correctly
-docs: update installation instructions
-test(utils): add edge case coverage
-chore(deps): update dependencies
-```
+| File | Purpose |
+|------|---------|
+| `main.py` | The only entry point |
+| `engine.py` | Pygame wrapper with scaling |
+| `world_gen.py` | Procedural world generation |
+| `game.py` | Main game class |
 
-## Error Recovery
+## Agent-Specific Notes
 
-### Tests Failing
-1. Read the error message carefully
-2. Check if it's a flaky test (run again)
-3. Check recent commits that might have caused it
-4. Fix the root cause, not just the symptom
+### Claude
+- Focus on architecture and complex refactoring
+- Can make cross-file changes
+- Check CLAUDE.md for detailed guidance
 
-### Lint Errors
-1. Run auto-fix first (`--fix` flag)
-2. Manually fix remaining issues
-3. Don't disable rules without justification
+### Copilot
+- Good for targeted fixes and feature additions
+- Check .github/copilot-instructions.md
 
-### Build Errors
-1. Check for type errors first
-2. Ensure dependencies are installed
-3. Check for missing files or imports
-
-## Memory Bank Protocol
-
-### Reading Context
-```bash
-# Always check before starting
-cat memory-bank/activeContext.md
-```
-
-### Updating Context
-```bash
-# After completing significant work
-cat >> memory-bank/activeContext.md << 'EOF'
-
-## Session: $(date +%Y-%m-%d)
-
-### Completed
-- [x] Description of completed work
-
-### For Next Agent
-- [ ] Remaining tasks
-EOF
-```
-
-## What NOT To Do
-
-- ❌ Don't make unrelated changes
-- ❌ Don't skip tests
-- ❌ Don't ignore linting errors
-- ❌ Don't commit without meaningful message
-- ❌ Don't push directly to main (use PRs)
-- ❌ Don't add dependencies without justification
-
-## Repository-Specific Instructions
-
-<!-- Add repository-specific agent instructions below -->
-
+### Cursor
+- IDE-integrated development
+- Check .cursor/rules/*.mdc for context

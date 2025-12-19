@@ -1,108 +1,173 @@
 ---
-description: Python coding standards
+description: Python standards for Rivers of Reckoning
 globs: "**/*.py"
 ---
 
-# Python Standards
+# Python Standards - Rivers of Reckoning
+
+## 🌊 Game-Specific Patterns
+
+### Async Required
+
+All entry points and game loops MUST be async for pygbag compatibility:
+
+```python
+# ✅ Correct - async pattern
+async def main():
+    game = Game()
+    await game.engine.run(game.update, game.draw)
+
+# ❌ Wrong - blocking pattern
+def main():
+    game = Game()
+    game.run()  # Blocks forever, breaks pygbag
+```
+
+### No Blocking Calls
+
+```python
+# ❌ Never use these
+import time
+time.sleep(1)           # Blocks browser
+input("Press enter")    # No stdin in browser
+open("file.txt")        # No filesystem in browser
+
+# ✅ Use async alternatives
+await asyncio.sleep(0)  # Yield to browser
+```
+
+### ECS Components
+
+Components are pure data (dataclasses):
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Position:
+    x: float = 0.0
+    y: float = 0.0
+
+@dataclass
+class Health:
+    current: int = 10
+    maximum: int = 10
+```
+
+### Procedural Generation
+
+Use opensimplex for coherent noise:
+
+```python
+from opensimplex import OpenSimplex
+
+noise = OpenSimplex(seed=42)
+value = noise.noise2(x * 0.1, y * 0.1)  # Returns -1 to 1
+```
 
 ## Style
 
-- **Formatter**: Ruff (Black-compatible, 88 char line length)
+- **Formatter**: Ruff (Black-compatible)
+- **Line length**: 100 characters (game code can be verbose)
 - **Imports**: Sorted by ruff
-- **Type hints**: Required on all public functions
 
 ```bash
 # Format and lint
-uvx ruff check --fix .
-uvx ruff format .
+flake8 src/
 ```
 
 ## Naming
 
 | Element | Convention | Example |
 |---------|------------|---------|
-| Functions/Variables | snake_case | `get_data()` |
-| Classes | PascalCase | `DataProcessor` |
-| Constants | UPPER_CASE | `MAX_RETRIES` |
-| Private | Leading underscore | `_internal_helper()` |
+| Functions/Variables | snake_case | `get_biome()` |
+| Classes | PascalCase | `ProceduralWorld` |
+| Constants | UPPER_CASE | `LOGICAL_WIDTH` |
+| Components | PascalCase | `Position`, `Health` |
+| Processors | PascalCase+Processor | `MovementProcessor` |
 
 ## Type Hints
 
 ```python
-# ✅ Modern style (Python 3.9+)
-from collections.abc import Mapping, Sequence
-from typing import Any
+# ✅ Modern style (Python 3.10+)
+def get_tile(self, x: int, y: int) -> tuple[TileType, BiomeType]:
+    ...
 
-def process(items: list[dict[str, Any]]) -> dict[str, int]:
-    return {"count": len(items)}
-
-# ❌ Legacy style - avoid
-from typing import Dict, List
-def process(items: Dict[str, Any]) -> List[str]: ...
+# For complex types
+from typing import Callable
+UpdateFunc = Callable[[], None]
+DrawFunc = Callable[[], None]
 ```
 
 ## Package Management
 
-- **Tool**: uv (fast, Rust-based)
+- **Tool**: uv
 - **Config**: `pyproject.toml`
-- **Lock file**: `uv.lock` (commit this)
+- **Lock file**: `uv.lock` (always commit)
 
 ```bash
-# Install dependencies
-uv sync
-
-# Add dependency
-uv add requests
-
-# Add dev dependency
-uv add --dev pytest
+uv sync                 # Install deps
+uv add pygame-ce        # Add dependency
+uv lock                 # Update lockfile
 ```
 
 ## Testing
 
-- **Framework**: pytest
-- **Location**: `tests/` directory
-- **Run**: `pytest` or `tox -e <package>`
-
 ```bash
-# Run tests
-pytest
-
-# With coverage
-pytest --cov=src
-
-# Specific test
-pytest tests/test_utils.py::test_specific
+pytest                  # Run all tests
+pytest -v               # Verbose
+pytest test_game_logic.py::test_specific  # Single test
 ```
 
-## Imports
+### Test Patterns
 
 ```python
-# ✅ Use pathlib
-from pathlib import Path
-config = Path("config.yaml")
+def test_procedural_variety():
+    """Different seeds produce different worlds."""
+    maps = [Map(seed=i * 100) for i in range(5)]
+    # Convert to tuples for comparison
+    grids = [tuple(tuple(row) for row in m.grid) for m in maps]
+    assert len(set(grids)) > 1  # At least 2 unique
 
-# ❌ Avoid os.path
-import os
-config = os.path.join("config.yaml")
+def test_walkability():
+    """Non-walkable tiles block movement."""
+    m = Map(seed=42)
+    for tile in ["#", "T", "R", "o"]:
+        # These tiles should not be walkable
+        ...
 ```
 
-## Docstrings
-
-Use Google style:
+## Docstrings (Google Style)
 
 ```python
-def process_items(items: list[dict], validate: bool = True) -> dict[str, Any]:
-    """Process items and return summary.
+def get_biome_at(x: int, y: int) -> BiomeType:
+    """Determine the biome at world coordinates.
+
+    Uses temperature and moisture noise to classify terrain
+    into biome types following Whittaker's classification.
 
     Args:
-        items: List of item dictionaries.
-        validate: Whether to validate before processing.
+        x: World X coordinate
+        y: World Y coordinate
 
     Returns:
-        Dictionary with processing results.
-
-    Raises:
-        ValueError: If items list is empty.
+        BiomeType enum value for this location
     """
+```
+
+## Imports Order
+
+```python
+# 1. Standard library
+import asyncio
+from dataclasses import dataclass
+from enum import Enum, auto
+
+# 2. Third-party
+import pygame
+from opensimplex import OpenSimplex
+
+# 3. Local
+from .engine import Engine
+from .systems import Position, Health
 ```

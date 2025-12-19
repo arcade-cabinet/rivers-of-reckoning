@@ -3,11 +3,11 @@
 
 services:
   - type: web
-    name: first-python-rpg
+    name: rivers-of-reckoning
     env: static
     buildCommand: |
       # Install build dependencies
-      pip install pygame-ce pygbag
+      pip install pygame-ce pygbag opensimplex esper
       
       # Install the project package so imports work
       pip install -e .
@@ -15,9 +15,6 @@ services:
       # Create build directory
       mkdir -p build/web
       
-      # Pygbag expects main.py as the entry point
-      cp main_web.py main.py
-      
-      # Build for web using pygbag
+      # Build for web using pygbag (main.py is the entry point)
       python -m pygbag --build build/web .
     staticPublishPath: ./build/web

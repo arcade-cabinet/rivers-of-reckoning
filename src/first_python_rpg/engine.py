@@ -6,7 +6,6 @@ seamlessly with pygbag for browser-based gameplay.
 
 import pygame
 import asyncio
-import sys
 
 
 # Logical resolution (game thinks in these coordinates)
@@ -28,9 +27,9 @@ PALETTE = {
     10: (255, 236, 39),  # Yellow
     11: (0, 228, 54),    # Green
     12: (41, 173, 255),  # Blue
-    13: (131, 118, 156), # Indigo
-    14: (255, 119, 168), # Pink
-    15: (255, 204, 170), # Peach
+    13: (131, 118, 156),  # Indigo
+    14: (255, 119, 168),  # Pink
+    15: (255, 204, 170),  # Peach
 }
 
 

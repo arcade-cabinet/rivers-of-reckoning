@@ -1,95 +1,132 @@
 # CLAUDE.md - Rivers of Reckoning
 
-> **A fully procedural roguelike RPG designed for web-first gameplay via pygbag**
+> **An immersive, procedurally generated roguelike RPG built for instant web play**
 
-## 🎮 Game Mission
+## 🌊 The Vision
 
-Rivers of Reckoning is a **web-first, procedurally generated RPG** built with pygame-ce and deployed via pygbag to GitHub Pages. Every aspect of the game—terrain, biomes, enemies, weather—is generated using noise functions for infinite replayability.
+**Rivers of Reckoning** is a browser-based adventure where players explore an infinite, ever-changing world of marshes, forests, deserts, and tundra. Every playthrough is unique—generated from a seed that creates coherent biomes, dynamic weather, and challenging encounters.
 
-### Core Design Principles
+### Player Experience Goals
 
-1. **Web-First**: The game is designed primarily for browser play. All code must be pygbag-compatible.
-2. **Responsive Scaling**: Uses `pygame.SCALED | pygame.RESIZABLE` to auto-adapt to any screen size.
-3. **Procedural Everything**: No hardcoded maps or content. Everything is generated from noise and seeds.
-4. **Retro Aesthetic**: 256x256 logical resolution with a 16-color palette, scaled to fill the viewport.
-5. **ECS Architecture**: Clean separation of data (components) and logic (systems) using esper.
+1. **Instant Play**: Click and you're in. No downloads, no installs, no waiting.
+2. **One More Turn**: Addictive exploration loop - "what's over that next hill?"
+3. **Tactile Feedback**: Responsive controls, satisfying combat, clear visual feedback
+4. **Mobile-Friendly**: Touch controls that feel native, not bolted-on
+5. **Shareable Worlds**: Share your seed with friends to explore the same world
+6. **Persistent Progress**: Local storage saves your best runs and achievements
 
-### Technology Stack
+### The World
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| Engine | pygame-ce | Cross-platform 2D graphics |
-| Web Deploy | pygbag | Python → WebAssembly compilation |
-| World Gen | opensimplex | Noise-based procedural terrain |
-| Architecture | esper | Entity Component System |
+- **Biomes** flow naturally into each other based on temperature and moisture
+- **Weather** changes dynamically - rain slows you, storms are dangerous
+- **Day/Night** cycle affects visibility and enemy behavior
+- **Secrets** hidden in the procedural generation reward exploration
 
-## Development Commands
+## 🎮 Core Design Principles
+
+| Principle | Implementation |
+|-----------|----------------|
+| **Web-First** | Single async `main.py`, pygbag deployment, no desktop-only features |
+| **Responsive** | `pygame.SCALED` auto-fits any screen, touch-friendly UI |
+| **Procedural** | OpenSimplex noise generates infinite coherent worlds |
+| **Juicy** | Visual feedback, screen shake, particle effects, sound |
+| **Accessible** | Clear UI, colorblind-friendly palette, simple controls |
+
+## 🛠 Technology Stack
+
+```
+pygame-ce     → Cross-platform 2D engine (web via pygbag)
+pygbag        → Python → WebAssembly for browser play
+opensimplex   → Coherent noise for world generation
+esper         → ECS architecture for clean game logic
+```
+
+## 📁 Project Structure
+
+```
+main.py                      # THE entry point (async, pygbag-ready)
+src/first_python_rpg/
+├── engine.py                # Responsive pygame with auto-scaling
+├── game.py                  # Game states, update/draw loops
+├── world_gen.py             # Procedural biomes via noise
+├── systems.py               # ECS components & processors
+├── map.py                   # Infinite scrolling camera
+├── player.py                # Player mechanics
+├── enemy.py                 # Enemy AI and spawning
+└── map_data.py              # Constants, items, events
+```
+
+## 🎯 Development Commands
 
 ```bash
-# Run the game (works locally and compiles for web)
+# Play the game
 python main.py
 
 # Run tests
 pytest -v
 
-# Lint code
-flake8 src/first_python_rpg/
+# Lint
+flake8 src/
 
-# Build for web
+# Build for web deployment
 python -m pygbag --build .
 
-# Update dependencies
+# Update lockfile
 uv lock && uv sync
 ```
 
-## Project Structure
+## ⚡ Key Technical Decisions
 
+### One Entry Point
+`main.py` is the ONLY entry point. No `main_web.py`, no `main_desktop.py`. The game is web-first, and the same code runs everywhere.
+
+### Responsive Scaling
+```python
+pygame.display.set_mode((256, 256), pygame.SCALED | pygame.RESIZABLE)
 ```
-main.py                    # Single entry point (pygbag-compatible async)
-src/first_python_rpg/
-├── engine.py              # Responsive pygame wrapper with auto-scaling
-├── game.py                # Main game class and state machine
-├── world_gen.py           # Procedural world generation (OpenSimplex)
-├── systems.py             # ECS components and processors
-├── map.py                 # Infinite map with camera viewport
-├── player.py              # Player entity and mechanics
-├── enemy.py               # Enemy entities
-└── map_data.py            # Game constants and data
+The game renders at 256x256 logical pixels and automatically scales to fill the browser viewport while maintaining aspect ratio.
+
+### Async Everything
+All game loops use `async/await` for pygbag compatibility:
+```python
+async def main():
+    game = Game()
+    await game.engine.run(game.update, game.draw)
 ```
 
-## Key Architecture Decisions
+### Infinite World
+The camera follows the player through procedurally generated terrain. No fixed map boundaries—explore forever in any direction.
 
-### Single Entry Point
-There is ONE `main.py` file. No separate desktop/web versions. The game is inherently web-first and uses async patterns compatible with pygbag.
+## 🎨 Visual Identity
 
-### Responsive Engine
-The `Engine` class uses `pygame.SCALED | pygame.RESIZABLE` flags. The game renders at 256x256 logical pixels and automatically scales to fill any viewport while maintaining aspect ratio.
+- **Palette**: 16-color retro aesthetic (PICO-8 inspired)
+- **Resolution**: 256x256 logical, scales to any display
+- **Style**: Pixel art, clear silhouettes, readable at any size
+- **Feedback**: Color flashes on damage, smooth transitions
 
-### Infinite Procedural World
-The `ProceduralWorld` class generates terrain on-demand using OpenSimplex noise. Each seed produces a unique but reproducible world. The camera follows the player through infinite terrain.
+## 🔊 Audio (Planned)
 
-### ECS Pattern
-Game logic is separated into:
-- **Components**: Pure data (Position, Health, Combat, etc.)
-- **Processors**: Systems that operate on components (Movement, AI, Weather)
+- Procedural ambient sounds based on biome
+- Weather audio (rain, wind, thunder)
+- Satisfying combat sounds
+- Subtle music that responds to danger level
 
-## Coding Standards
+## 📱 Controls
 
-- **Python 3.10+** required
-- **No blocking calls** - everything must be async-compatible for pygbag
-- **No desktop-specific code** - web-first means no file system access, no subprocess, etc.
-- **Conventional commits** - feat/fix/docs/test/chore prefixes
+**Keyboard**: Arrow keys move, Space/Enter select, Escape pause
+**Touch** (planned): Virtual d-pad, tap-to-interact
 
 ## Before Making Changes
 
-1. Read `memory-bank/activeContext.md` if it exists
+1. Ask: "Does this enhance the web play experience?"
 2. Run tests: `pytest -v`
 3. Check lint: `flake8 src/`
-4. Understand the web-first constraint
+4. Test in browser if possible
 
-## After Making Changes
+## Coding Standards
 
-1. Ensure all tests pass
-2. Ensure lint passes
-3. Test that the game runs: `python main.py`
-4. Update documentation if needed
+- Python 3.10+
+- No blocking/synchronous patterns
+- No file system writes (use localStorage via pygbag)
+- No subprocess or OS-specific code
+- Conventional commits (feat/fix/docs/test/chore)
