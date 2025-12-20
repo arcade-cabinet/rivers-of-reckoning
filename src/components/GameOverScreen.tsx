@@ -61,7 +61,7 @@ export function GameOverScreen() {
           </Typography>
           <Grid container spacing={2}>
             {stats.map((stat) => (
-              <Grid item key={stat.label} xs={6}>
+              <Grid key={stat.label} size={6}>
                 <div
                   style={{
                     padding: '8px',

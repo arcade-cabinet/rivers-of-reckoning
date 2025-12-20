@@ -29,3 +29,4 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 tests/screenshots/
+bin/
