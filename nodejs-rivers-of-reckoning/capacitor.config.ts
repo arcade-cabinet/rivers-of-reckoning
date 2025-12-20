@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.jbcom.riversofReckoningonIng',
+  appId: 'com.jbcom.riversOfReckoning',
   appName: 'Rivers of Reckoning',
   webDir: 'dist',
   server: {

@@ -66,7 +66,38 @@ const getTimePhase = (hour: number): TimePhase => {
   return TimePhase.NIGHT
 }
 
-const getRandomWeather = (): WeatherType => {
+/**
+ * Seeded Random Number Generator for deterministic world generation.
+ * Addresses PR feedback about non-deterministic world generation.
+ */
+class SeededRandom {
+  private seed: number
+
+  constructor(seed: number) {
+    this.seed = seed
+  }
+
+  next(): number {
+    this.seed = (this.seed * 9301 + 49297) % 233280
+    return this.seed / 233280
+  }
+
+  nextInRange(min: number, max: number): number {
+    return min + this.next() * (max - min)
+  }
+}
+
+// Global seeded RNG instance - initialized with world seed
+let gameRng: SeededRandom | null = null
+
+const getSeededRandom = (seed: number): number => {
+  if (!gameRng) {
+    gameRng = new SeededRandom(seed)
+  }
+  return gameRng.next()
+}
+
+const getRandomWeather = (seed: number): WeatherType => {
   const choices: [WeatherType, number][] = [
     [WeatherType.CLEAR, 0.5],
     [WeatherType.RAIN, 0.2],
@@ -76,7 +107,7 @@ const getRandomWeather = (): WeatherType => {
   ]
 
   const total = choices.reduce((sum, [, weight]) => sum + weight, 0)
-  let r = Math.random() * total
+  let r = getSeededRandom(seed) * total
   let cumulative = 0
 
   for (const [weather, weight] of choices) {
@@ -237,23 +268,27 @@ export const useGameStore = create<GameStore>()(
       }),
 
     changeWeather: () =>
-      set(() => {
-        const newWeather = getRandomWeather()
-        let windSpeed = Math.random()
+      set((state) => {
+        const seed = state.worldState.seed
+        const newWeather = getRandomWeather(seed)
+        
+        // Use seeded random for deterministic weather
+        const rng = new SeededRandom(seed + state.timeOfDay.dayCount * 1000)
+        let windSpeed = rng.next()
 
         if (newWeather === WeatherType.STORM) {
-          windSpeed = 3 + Math.random() * 3
+          windSpeed = 3 + rng.next() * 3
         } else if (newWeather === WeatherType.RAIN) {
-          windSpeed = 1 + Math.random() * 2
+          windSpeed = 1 + rng.next() * 2
         }
 
         return {
           weather: {
             current: newWeather,
-            intensity: 0.3 + Math.random() * 0.7,
-            duration: 60 + Math.random() * 240,
+            intensity: 0.3 + rng.next() * 0.7,
+            duration: 60 + rng.next() * 240,
             windSpeed,
-            windAngle: Math.random() * Math.PI * 2,
+            windAngle: rng.next() * Math.PI * 2,
           },
         }
       }),
