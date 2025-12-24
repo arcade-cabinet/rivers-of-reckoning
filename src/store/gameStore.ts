@@ -51,6 +51,12 @@ interface GameStore {
   incrementEnemiesDefeated: () => void
   incrementBossesDefeated: () => void
 
+  // Input state
+  joystickInput: { x: number; y: number }
+  setJoystickInput: (input: { x: number; y: number }) => void
+  lookInput: { x: number; y: number }
+  setLookInput: (input: { x: number; y: number }) => void
+
   // Game actions
   startGame: (seed?: number) => void
   pauseGame: () => void
@@ -356,6 +362,12 @@ export const useGameStore = create<GameStore>()(
           score: state.playerStats.score + 100,
         },
       })),
+
+    // Input state
+    joystickInput: { x: 0, y: 0 },
+    setJoystickInput: (input) => set({ joystickInput: input }),
+    lookInput: { x: 0, y: 0 },
+    setLookInput: (input) => set({ lookInput: input }),
 
     // Game actions - reset to initial state using constants
     startGame: (seed) =>

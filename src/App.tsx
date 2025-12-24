@@ -34,7 +34,7 @@ import {
 } from '@jbcom/strata'
 
 // Local components
-import { TitleScreen, GameHUD, PauseMenu, GameOverScreen, Player, EnemySystem, CombatSystem } from './components'
+import { TitleScreen, GameHUD, PauseMenu, GameOverScreen, Player, EnemySystem, CombatSystem, VirtualJoystick } from './components'
 import { useGameStore } from './store/gameStore'
 import { WeatherType } from './types/game'
 
@@ -284,6 +284,25 @@ function GameLoop() {
 }
 
 // =============================================================================
+// CAMERA ROTATOR (for look joystick)
+// =============================================================================
+
+function CameraRotator({ orbitControlsRef }: { orbitControlsRef: React.RefObject<any> }) {
+  const { lookInput } = useGameStore()
+  
+  useFrame(() => {
+    if (orbitControlsRef.current && (lookInput.x !== 0 || lookInput.y !== 0)) {
+      const sensitivity = 2.0 // Adjust for taste
+      orbitControlsRef.current.rotateLeft(lookInput.x * sensitivity * 0.01)
+      orbitControlsRef.current.rotateUp(lookInput.y * sensitivity * 0.01)
+      orbitControlsRef.current.update()
+    }
+  })
+  
+  return null
+}
+
+// =============================================================================
 // MAIN 3D SCENE
 // =============================================================================
 
@@ -298,6 +317,8 @@ function Scene() {
     addGold,
     incrementEnemiesDefeated,
   } = useGameStore()
+
+  const orbitControlsRef = useRef<any>(null)
 
   // Callbacks for enemy system
   const handleEnemyDefeated = (xp: number, gold: number) => {
@@ -388,6 +409,7 @@ function Scene() {
 
       {/* Camera controls - follows player */}
       <OrbitControls
+        ref={orbitControlsRef}
         enableDamping
         dampingFactor={0.05}
         maxPolarAngle={Math.PI / 2.1}
@@ -395,6 +417,8 @@ function Scene() {
         maxDistance={50}
         target={[playerPosition.x, playerPosition.y, playerPosition.z]}
       />
+
+      <CameraRotator orbitControlsRef={orbitControlsRef} />
 
       {/* Post-processing */}
       <CinematicEffects
@@ -433,6 +457,12 @@ export default function App() {
           {/* HUD Overlay */}
           <GameHUD />
           
+          {/* Virtual Joysticks for Mobile */}
+          <div style={{ pointerEvents: 'none' }}>
+            <VirtualJoystick type="move" position={{ bottom: '40px', left: '40px' }} />
+            <VirtualJoystick type="look" position={{ bottom: '40px', right: '40px' }} color="#2196F3" />
+          </div>
+
           {/* Pause Menu */}
           {gameState === 'paused' && <PauseMenu />}
           
