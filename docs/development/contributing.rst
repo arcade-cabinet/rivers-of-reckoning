@@ -2,76 +2,33 @@ Contributing Guide
 ==================
 
 Thank you for your interest in contributing to **Rivers of Reckoning**! This 
-document provides an overview of the project's modular architecture and 
+document provides an overview of the project's modern architecture and 
 guidelines for developers.
 
 Architecture Overview
 =====================
 
-The game is built with a modular, decoupled architecture designed for 
-extensibility and performance in a web environment.
+The game is built with a highly decoupled, component-based architecture using 
+React Three Fiber and the Strata engine.
 
-Engine Abstraction Layer
-------------------------
+Strata Engine Integration
+-------------------------
 
-All interaction with the underlying game engine (Pygame-ce) is handled through 
-the ``Engine`` class in ``src/first_python_rpg/engine.py``. 
+We use the **@jbcom/strata** library for all heavy-lifting procedural tasks:
 
-- **Responsive Scaling**: Uses ``pygame.SCALED`` to handle different screen sizes.
-- **Async Loop**: Implements an ``asyncio``-based game loop for Pygbag 
-  compatibility.
-- **Input Mapping**: Provides ``btn()`` and ``btnp()`` methods to check key states 
-  independently of the frame rate.
+- **Terrain**: Generated using the `fbm()` (Fractal Brownian Motion) function.
+- **Vegetation**: Efficiently rendered using instanced components (`GrassInstances`, `TreeInstances`).
+- **Weather**: Procedural sky, rain, and snow components.
+- **Post-Processing**: Integrated cinematic effects for a polished look.
 
-Entity Component System (ECS)
------------------------------
-
-We use the **esper** library to implement an ECS pattern. This allows us to 
-separate data (Components) from logic (Systems).
-
-- **Components**: Simple data classes located in ``src/first_python_rpg/types.py``.
-- **Systems**: Logic processors found in ``src/first_python_rpg/systems.py``.
-- **World**: The ``ecs_world`` orchestrates the processing of all systems.
-
-Procedural Generation
----------------------
-
-The world is generated using **OpenSimplex noise**.
-
-- **FBM (Fractal Brownian Motion)**: Used to create layered, natural-looking 
-  noise for terrain.
-- **Biomes**: A multi-dimensional biome system based on temperature and moisture 
-  noise maps.
-- **Adaptive Spawning**: Enemies and objects are placed according to the 
-  characteristics of the current biome.
-
-Development Workflow
-====================
-
-Coding Standards
+State Management
 ----------------
 
-- **TypeScript-like Python**: Use type hints wherever possible to maintain 
-  clarity.
-- **Modular Imports**: Avoid circular dependencies by keeping business logic 
-  separated from the engine.
-- **Web-Safe**: Avoid using synchronous blocking calls or file system operations 
-  that aren't supported in WASM.
+Game state is managed via **Zustand**, providing a fast and simple way to share 
+state across React components without unnecessary re-renders.
 
-Testing
--------
-
-We use **pytest** for unit and integration tests.
-
-.. code-block:: bash
-
-   pytest tests/
-
-Continuous Integration
-----------------------
-
-GitHub Actions are configured to run linting and tests on every pull request. 
-Ensure your changes pass all checks before submitting.
+- **Store**: Located in `src/store/gameStore.ts`.
+- **Selectors**: Use selectors to subscribe only to the state you need.
 
 Project Structure
 =================
@@ -79,13 +36,49 @@ Project Structure
 .. code-block:: text
 
    /
-   ├── main.py                 # Entry point
    ├── src/
-   │   └── first_python_rpg/
-   │       ├── engine.py       # Engine abstraction
-   │       ├── game.py         # Main game orchestration
-   │       ├── map.py          # Procedural map logic
-   │       ├── systems.py      # ECS systems
-   │       └── world_gen.py    # Noise and biome logic
+   │   ├── App.tsx             # Main 3D scene composition
+   │   ├── components/         # UI components (HUD, Menus)
+   │   ├── store/              # Zustand state management
+   │   ├── types/              # TypeScript definitions
+   │   ├── constants/          # Game constants and config
+   │   └── events/             # Decoupled event system
    ├── docs/                   # Documentation (Sphinx)
-   └── tests/                  # Test suite
+   ├── tests/                  # Playwright E2E tests
+   └── public/                 # Static assets
+
+Development Workflow
+====================
+
+Coding Standards
+----------------
+
+- **TypeScript Strict Mode**: All new code must be fully typed.
+- **Functional Components**: Use React functional components and hooks.
+- **Seeded Randomness**: Always use the provided seeded RNG for procedural generation to ensure reproducibility.
+- **Performance First**: Be mindful of the render loop; use `useFrame` sparingly and optimize heavy computations.
+
+Testing
+-------
+
+We use **Playwright** for end-to-end testing to ensure the game runs correctly 
+across different browsers.
+
+.. code-block:: bash
+
+   pnpm test:e2e
+
+Commands Summary
+----------------
+
+- `pnpm dev`: Start the development server.
+- `pnpm build`: Create a production build.
+- `pnpm lint`: Run ESLint.
+- `pnpm typecheck`: Run the TypeScript compiler in no-emit mode.
+- `pnpm test:e2e`: Run E2E tests.
+
+Continuous Integration
+----------------------
+
+GitHub Actions are configured to run linting, typechecking, and E2E tests on 
+every pull request. Ensure your changes pass all checks before submitting.

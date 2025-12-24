@@ -15,19 +15,18 @@ Getting Started
 Launching the Game
 ------------------
 
-Launch the game using the following command:
+Launch the game during development using:
 
 .. code-block:: bash
 
-   python main.py
+   pnpm dev
 
-The game uses a "Web-First" architecture, meaning it's designed to run at a logical 
-resolution of 256x256 and automatically scales to fit your window size.
+In a production environment, simply visit the hosted URL in any modern browser.
 
 Controls
 ========
 
-The game features a tactile feedback system with responsive controls.
+The game features responsive controls optimized for both desktop and mobile.
 
 Desktop
 -------
@@ -38,30 +37,25 @@ Desktop
 
    * - Key
      - Action
-   * - **Arrow Keys**
+   * - **W, A, S, D**
      - Move your character through the world
-   * - **Enter / Space**
-     - Start game / Confirm selection
+   * - **Space**
+     - Attack enemies
    * - **Escape**
-     - Pause game / Return to title screen
-   * - **A**
-     - Attack (Boss Battles)
-   * - **S**
-     - Cast Spell (Boss Battles)
-   * - **Q**
-     - Quit to menu (when paused)
+     - Pause game / Open menu
+   * - **Mouse Wheel**
+     - Zoom camera in/out
+   * - **Left Click**
+     - Interact with UI elements
 
 Mobile & Touch
 --------------
 
-When playing in a browser on a mobile device, the game utilizes **pygbag's 
-integrated virtual gamepad**. 
+When playing on a mobile device, the game provides an intuitive touch interface.
 
-* **On-screen D-pad**: Use the virtual directional pad on the left to move.
-* **On-screen Buttons**: Use the 'A' and 'B' buttons on the right for interaction 
-  and combat.
-* **Responsive Scaling**: The game will automatically rotate and scale to fit 
-  your device's orientation.
+* **On-screen Joystick**: Use the virtual joystick on the left to move.
+* **On-screen Buttons**: Use the action buttons on the right for combat.
+* **Responsive Scaling**: The game UI scales automatically to fit your device's screen.
 
 Game Features
 =============
@@ -69,41 +63,38 @@ Game Features
 Procedural World Generation
 ---------------------------
 
-The world of Rivers of Reckoning is generated entirely from noise functions:
+The world of Rivers of Reckoning is generated entirely on the fly:
 
-- **Infinite Exploration**: The world expands as you move.
-- **Dynamic Biomes**: Transition between Marshes, Forests, Deserts, and Tundra.
-- **Seeded Worlds**: Every world is unique but reproducible using a seed.
+- **Infinite Exploration**: The terrain generates procedurally as you move.
+- **Dynamic Biomes**: Transition between Grasslands, Forests, Marshes, Deserts, and Tundra.
+- **Seeded Worlds**: Share your world seed with friends to explore the same terrain.
 
 Weather & Environment
 ---------------------
 
-- **Dynamic Weather**: Experience rain, storms, and clear skies that affect 
-  visibility and atmosphere.
-- **Day/Night Cycle**: The environment changes as time passes in the game world.
+- **Dynamic Weather**: Experience rain, snow, and storms powered by the Strata engine.
+- **Day/Night Cycle**: Watch the world change from dawn to dusk with dynamic lighting.
+- **Atmospheric Effects**: Bloom, vignette, and cinematic color grading enhance immersion.
 
 Combat & Progression
 ====================
 
-- **Enemy Spawning**: Enemies spawn procedurally based on the current biome and 
-  your distance from the start.
-- **Combat Mechanics**: Use a combination of melee attacks and spells to defeat 
-  foes.
-- **Experience (XP)**: Gain XP by exploring and defeating enemies to level up 
-  your character.
+- **Enemy Encounters**: Different enemies haunt different biomes.
+- **Experience (XP)**: Gain XP by defeating enemies and exploring new areas.
+- **Leveling Up**: Increase your stats as you grow more powerful.
+- **Gold**: Collect gold to prepare for future updates (shop system coming soon).
 
 Tips for Survival
 =================
 
-1. **Watch the Biome**: Different biomes have different enemy types and spawn rates.
-2. **Keep Moving**: Exploration is the key to finding better loot and gaining XP.
-3. **Use Spells Wisely**: Mana is a limited resource; save your spells for 
-  tougher encounters.
+1. **Keep Moving**: Staying in one place for too long may lead to more frequent spawns.
+2. **Watch the Biome**: Some biomes are much more dangerous than others.
+3. **Use the Camera**: Zooming out can help you spot enemies from a distance.
 
 Credits
 =======
 
-Rivers of Reckoning is built with **pygame-ce** and deployed for the web 
-using **pygbag**.
+Rivers of Reckoning is built with **@jbcom/strata**, **React Three Fiber**, and 
+**TypeScript**.
 
 Enjoy your adventure!
