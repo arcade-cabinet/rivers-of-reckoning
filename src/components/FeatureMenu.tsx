@@ -2,7 +2,6 @@ import {
   Box,
   Typography,
   Switch,
-  FormControlLabel,
   Button,
   Container,
   Paper,
@@ -64,7 +63,7 @@ export function FeatureMenu() {
 
           <Grid container spacing={2} sx={{ mb: 4 }}>
             {(Object.keys(features) as Array<keyof GameFeatures>).map((key) => (
-              <Grid item xs={12} key={key}>
+              <Grid size={12} key={key}>
                 <Paper
                   variant="outlined"
                   sx={{

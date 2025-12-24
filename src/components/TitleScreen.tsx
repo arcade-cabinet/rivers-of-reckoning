@@ -2,12 +2,12 @@
  * Title Screen - Ported from game.py draw_title()
  */
 
-import { Typography, Button, Container, List, ListItem, ListItemIcon, ListItemText } from '@mui/material'
-import { PlayArrow, Star } from '@mui/icons-material'
+import { Typography, Button, Container, List, ListItem, ListItemIcon, ListItemText, Box } from '@mui/material'
+import { PlayArrow, Star, Settings, AutoAwesome } from '@mui/icons-material'
 import { useGameStore } from '../store/gameStore'
 
 export function TitleScreen() {
-  const { startGame } = useGameStore()
+  const { startGame, setGameState } = useGameStore()
 
   // Core features from GAME_IDENTITY.md design pillars
   const features = [
@@ -97,6 +97,7 @@ export function TitleScreen() {
           sx={{
             px: 6,
             py: 2,
+            mb: 2,
             fontSize: '1.2rem',
             fontFamily: '"Press Start 2P", monospace',
             background: 'linear-gradient(45deg, #4CAF50 30%, #8BC34A 90%)',
@@ -109,6 +110,37 @@ export function TitleScreen() {
         >
           START GAME
         </Button>
+
+        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mb: 4 }}>
+          <Button
+            variant="outlined"
+            startIcon={<Settings />}
+            onClick={() => setGameState('settings')}
+            sx={{
+              color: 'white',
+              borderColor: '#666',
+              fontFamily: '"Press Start 2P", monospace',
+              fontSize: '0.7rem',
+              '&:hover': { borderColor: '#4CAF50', background: 'rgba(76, 175, 80, 0.1)' },
+            }}
+          >
+            SETTINGS
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<AutoAwesome />}
+            onClick={() => setGameState('features')}
+            sx={{
+              color: 'white',
+              borderColor: '#666',
+              fontFamily: '"Press Start 2P", monospace',
+              fontSize: '0.7rem',
+              '&:hover': { borderColor: '#2196F3', background: 'rgba(33, 150, 243, 0.1)' },
+            }}
+          >
+            FEATURES
+          </Button>
+        </Box>
 
         {/* Controls hint */}
         <Typography

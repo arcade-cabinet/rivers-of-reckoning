@@ -34,7 +34,7 @@ import {
 } from '@jbcom/strata'
 
 // Local components
-import { TitleScreen, GameHUD, PauseMenu, GameOverScreen, Player, EnemySystem, CombatSystem } from './components'
+import { TitleScreen, GameHUD, PauseMenu, GameOverScreen, Player, EnemySystem, CombatSystem, SettingsMenu, FeatureMenu } from './components'
 import { useGameStore } from './store/gameStore'
 import { WeatherType } from './types/game'
 
@@ -424,6 +424,12 @@ export default function App() {
       {/* Title Screen */}
       {gameState === 'title' && <TitleScreen />}
       
+      {/* Settings Menu */}
+      {gameState === 'settings' && <SettingsMenu />}
+
+      {/* Feature Menu */}
+      {gameState === 'features' && <FeatureMenu />}
+
       {/* Game Over Screen */}
       {gameState === 'gameover' && <GameOverScreen />}
       
