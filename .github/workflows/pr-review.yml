@@ -1,0 +1,126 @@
+name: AI PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: pr-review-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  ollama-review:
+    name: AI Review (GLM-4.6)
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' &&
+      !github.event.pull_request.draft &&
+      github.actor != 'dependabot[bot]'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup Ollama
+        uses: ai-action/setup-ollama@9ab612864ffa0fa8c8ea1167ed89d326e39fd0fe # v2.0.0
+        with:
+          model: glm-4.6:cloud
+
+      - name: Get PR Diff
+        id: diff
+        run: |
+          gh pr diff ${{ github.event.pull_request.number }} | head -c 50000 > pr_diff.txt
+          echo "PR_DIFF<<EOF" >> $GITHUB_ENV
+          cat pr_diff.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: AI Review
+        uses: ai-action/ollama-action@be18a6c5c9977cc0510d1d705edd02d574269c93 # v2.0.0
+        id: review
+        with:
+          model: glm-4.6:cloud
+          prompt: |
+            You are a senior code reviewer. Analyze this pull request diff and provide a comprehensive review.
+
+            **PR Title:** ${{ github.event.pull_request.title }}
+            **Author:** ${{ github.event.pull_request.user.login }}
+            **Repository:** ${{ github.repository }}
+
+            **Diff:**
+            ${{ env.PR_DIFF }}
+
+            **Review Instructions:**
+            1. **Security** - Look for vulnerabilities, exposed secrets, injection risks
+            2. **Performance** - Identify bottlenecks, memory leaks, expensive operations
+            3. **Code Quality** - Check readability, DRY violations, complexity
+            4. **Testing** - Note missing test coverage or edge cases
+            5. **Best Practices** - Verify error handling, documentation, patterns
+
+            **Output Format:**
+            ## Summary
+            [1-2 sentence overall assessment]
+
+            ## Score: [0-100]
+
+            ## Issues Found
+            | Severity | File | Issue |
+            |----------|------|-------|
+            | HIGH/MED/LOW | path | description |
+
+            ## Recommendations
+            - [Actionable suggestions]
+
+            If the PR looks good, say so briefly and give a high score.
+        env:
+          OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
+
+      - name: Post Review Comment
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          script: |
+            const review = `${{ steps.review.outputs.response }}`;
+            
+            const body = `## 🤖 AI Code Review (GLM-4.6)
+
+            ${review}
+
+            ---
+            <sub>Powered by Ollama GLM-4.6 Cloud • [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})</sub>`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+
+            const existingComment = comments.find(c => 
+              c.user.type === 'Bot' && 
+              c.body.includes('🤖 AI Code Review')
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: body
+              });
+            }
