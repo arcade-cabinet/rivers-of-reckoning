@@ -3,8 +3,9 @@
  * Ported from Python enemy.py and procedural_enemies.py
  */
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import { ENEMY, PLAYER } from '../constants/game'
 import { combatEvents } from '../events/combatEvents'
@@ -93,6 +94,11 @@ export function EnemySystem({
   const meshRefs = useRef<Map<number, THREE.Mesh>>(new Map())
   const healthBarRefs = useRef<Map<number, THREE.Mesh>>(new Map())
   const lastAttackRef = useRef<Map<number, number>>(new Map())
+
+  // Load enemy texture
+  const enemyTexture = useTexture('/assets/images/enemy.png')
+  enemyTexture.magFilter = THREE.NearestFilter
+  enemyTexture.minFilter = THREE.NearestFilter
 
   // Keep ref in sync with state for AI loop
   useEffect(() => {
@@ -221,24 +227,32 @@ export function EnemySystem({
 
         return (
           <group key={enemy.id}>
-            {/* Enemy body */}
-            <mesh
+            {/* Enemy Sprite */}
+            <sprite
               ref={(ref) => {
-                if (ref) meshRefs.current.set(enemy.id, ref)
+                if (ref) meshRefs.current.set(enemy.id, ref as unknown as THREE.Mesh)
                 else meshRefs.current.delete(enemy.id)
               }}
               position={enemy.position}
-              castShadow
+              scale={[1, 1, 1]}
             >
-              <sphereGeometry args={[0.4, 16, 16]} />
-              <meshStandardMaterial
+              <spriteMaterial
+                map={enemyTexture}
                 color={enemy.type.color}
-                roughness={0.6}
-                metalness={0.2}
+                transparent
+                alphaTest={0.5}
               />
+            </sprite>
+
+            {/* Health bar background */}
+            <mesh
+              position={[enemy.position.x, enemy.position.y + 0.8, enemy.position.z]}
+            >
+              <planeGeometry args={[0.82, 0.12]} />
+              <meshBasicMaterial color="#000000" />
             </mesh>
 
-            {/* Health bar */}
+            {/* Health bar foreground */}
             <mesh
               ref={(ref) => {
                 if (ref) healthBarRefs.current.set(enemy.id, ref)

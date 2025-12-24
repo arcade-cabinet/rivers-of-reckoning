@@ -3,24 +3,44 @@
  * Ported from Python player.py
  */
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import { useGameStore } from '../store/gameStore'
 import { PLAYER } from '../constants/game'
+import { audioManager } from '../utils/audioManager'
 
 interface PlayerProps {
   heightFunction: (x: number, z: number) => number
 }
 
 export function Player({ heightFunction }: PlayerProps) {
-  const meshRef = useRef<THREE.Mesh>(null)
+  const meshRef = useRef<THREE.Group>(null)
+  const spriteRef = useRef<THREE.Sprite>(null)
   const velocityRef = useRef(new THREE.Vector3())
   const keysRef = useRef<Set<string>>(new Set())
+  const animationFrameRef = useRef(0)
+  const animationTimerRef = useRef(0)
 
   const { playerPosition, movePlayer, playerHealth } = useGameStore()
+  const joystickRef = useRef({ x: 0, y: 0 })
 
-  // Keyboard input handling
+  // Load player spritesheet
+  const texture = useTexture('/assets/images/player_spritesheet.png')
+  
+  // Clone texture for this instance and configure for animation
+  const spriteTexture = useMemo(() => {
+    const tex = texture.clone()
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+    tex.repeat.set(1/4, 1) // 4 frames
+    tex.magFilter = THREE.NearestFilter // Pixel art look
+    tex.minFilter = THREE.NearestFilter
+    tex.needsUpdate = true
+    return tex
+  }, [texture])
+
+  // Keyboard and Joystick input handling
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       keysRef.current.add(e.key.toLowerCase())
@@ -28,42 +48,65 @@ export function Player({ heightFunction }: PlayerProps) {
     const handleKeyUp = (e: KeyboardEvent) => {
       keysRef.current.delete(e.key.toLowerCase())
     }
+    const handleJoystickMove = (e: any) => {
+      joystickRef.current = e.detail
+    }
 
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
+    window.addEventListener('joystick-move', handleJoystickMove)
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
+      window.removeEventListener('joystick-move', handleJoystickMove)
     }
   }, [])
 
   // Movement and physics
-  useFrame((_, delta) => {
-    if (!meshRef.current) return
+  useFrame((state, delta) => {
+    if (!meshRef.current || !spriteRef.current) return
 
     const keys = keysRef.current
     const velocity = velocityRef.current
+    const joystick = joystickRef.current
 
-    // WASD movement
-    let moveX = 0
-    let moveZ = 0
+    // Movement input (WASD + Joystick)
+    let moveX = joystick.x
+    let moveZ = joystick.y
 
     if (keys.has('w') || keys.has('arrowup')) moveZ -= 1
     if (keys.has('s') || keys.has('arrowdown')) moveZ += 1
     if (keys.has('a') || keys.has('arrowleft')) moveX -= 1
     if (keys.has('d') || keys.has('arrowright')) moveX += 1
 
-    // Normalize diagonal movement
-    if (moveX !== 0 && moveZ !== 0) {
-      const len = Math.sqrt(moveX * moveX + moveZ * moveZ)
-      moveX /= len
-      moveZ /= len
+    // Normalize input
+    const inputLen = Math.sqrt(moveX * moveX + moveZ * moveZ)
+    if (inputLen > 1) {
+      moveX /= inputLen
+      moveZ /= inputLen
     }
 
     // Apply movement
     velocity.x = moveX * PLAYER.SPEED
     velocity.z = moveZ * PLAYER.SPEED
+
+    const isMoving = velocity.x !== 0 || velocity.z !== 0
+
+    // Update animation
+    if (isMoving) {
+      animationTimerRef.current += delta * 10
+      animationFrameRef.current = Math.floor(animationTimerRef.current) % 4
+      spriteTexture.offset.x = animationFrameRef.current / 4
+
+      // Play move sound occasionally
+      if (Math.floor(animationTimerRef.current * 2) % 4 === 0 && animationFrameRef.current !== 0) {
+        audioManager.playMove()
+      }
+    } else {
+      spriteTexture.offset.x = 0 // Standing frame
+      animationTimerRef.current = 0
+    }
 
     // Update position
     const newX = playerPosition.x + velocity.x * delta
@@ -78,7 +121,7 @@ export function Player({ heightFunction }: PlayerProps) {
     const targetY = Math.max(0.5, terrainY + 0.5)
 
     // Only update if actually moved
-    if (velocity.x !== 0 || velocity.z !== 0) {
+    if (isMoving) {
       movePlayer(
         clampedX - playerPosition.x,
         targetY - playerPosition.y,
@@ -86,37 +129,36 @@ export function Player({ heightFunction }: PlayerProps) {
       )
     }
 
-    // Update mesh position
+    // Update group position
     meshRef.current.position.set(clampedX, targetY, clampedZ)
 
-    // Rotate in movement direction
-    if (velocity.x !== 0 || velocity.z !== 0) {
-      meshRef.current.rotation.y = Math.atan2(velocity.x, velocity.z)
-    }
+    // Make sprite face camera or movement direction?
+    // Usually sprites in 3D are billboarding. 
+    // We'll let the sprite billboard naturally by not rotating the group
   })
 
-  // Player color based on health
+  // Player health color (we can still use it by tinting the sprite)
   const healthPercent = playerHealth.current / playerHealth.maximum
-  const playerColor = healthPercent > 0.5 ? '#4CAF50' : healthPercent > 0.25 ? '#FF9800' : '#f44336'
+  const playerColor = healthPercent > 0.5 ? '#ffffff' : healthPercent > 0.25 ? '#FF9800' : '#f44336'
 
   return (
-    <group>
-      {/* Player body */}
-      <mesh
-        ref={meshRef}
-        position={[playerPosition.x, playerPosition.y + 0.5, playerPosition.z]}
-        castShadow
-      >
-        <capsuleGeometry args={[0.3, 1, 8, 16]} />
-        <meshStandardMaterial color={playerColor} roughness={0.4} metalness={0.1} />
-      </mesh>
+    <group ref={meshRef}>
+      {/* Player Sprite */}
+      <sprite ref={spriteRef} scale={[1.2, 1.2, 1]}>
+        <spriteMaterial 
+          map={spriteTexture} 
+          color={playerColor} 
+          transparent 
+          alphaTest={0.5}
+        />
+      </sprite>
 
       {/* Player shadow indicator on ground */}
       <mesh
-        position={[playerPosition.x, 0.01, playerPosition.z]}
+        position={[0, -0.49, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
       >
-        <circleGeometry args={[0.5, 16]} />
+        <circleGeometry args={[0.4, 16]} />
         <meshBasicMaterial color="#000000" transparent opacity={0.3} />
       </mesh>
     </group>

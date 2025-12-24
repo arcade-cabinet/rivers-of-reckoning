@@ -5,9 +5,15 @@
 import { Typography, Button, Container, List, ListItem, ListItemIcon, ListItemText } from '@mui/material'
 import { PlayArrow, Star } from '@mui/icons-material'
 import { useGameStore } from '../store/gameStore'
+import { audioManager } from '../utils/audioManager'
 
 export function TitleScreen() {
   const { startGame } = useGameStore()
+
+  const handleStart = () => {
+    audioManager.playClick()
+    startGame()
+  }
 
   // Core features from GAME_IDENTITY.md design pillars
   const features = [
@@ -93,7 +99,7 @@ export function TitleScreen() {
           variant="contained"
           size="large"
           startIcon={<PlayArrow />}
-          onClick={() => startGame()}
+          onClick={handleStart}
           sx={{
             px: 6,
             py: 2,
