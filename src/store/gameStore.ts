@@ -19,8 +19,6 @@ import {
   WorldState,
   Quest,
   QuestType,
-  RandomEvent,
-  EventType,
 } from '../types/game'
 import { PLAYER, TIME, WEATHER, LEVELING, DIFFICULTY, QUESTS } from '../constants/game'
 

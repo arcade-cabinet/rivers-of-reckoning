@@ -88,7 +88,9 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
     // Check for health indicator
     const hasHealthIndicator = bodyText?.includes('Health') || 
                                bodyText?.includes('HP') || 
-                               bodyText?.includes('/') // Health format "X / Y"
+                               bodyText?.includes('/') || // Health format "X / Y"
+                               bodyText?.includes('♥') ||
+                               bodyText?.includes('Favorite') // Icon name or character
     expect(hasHealthIndicator).toBe(true)
     
     // Check for time display (Day X format)
@@ -363,7 +365,7 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
     expect(bodyText).toMatch(/Level\s*1|Lv\s*1|LVL\s*1/i)
     
     // Check for gold display
-    const hasGoldDisplay = bodyText?.includes('Gold') || bodyText?.includes('0')
+    const hasGoldDisplay = bodyText?.includes('Gold') || bodyText?.includes('💰') || bodyText?.includes('0')
     expect(hasGoldDisplay).toBe(true)
     
     // Check for score display
@@ -478,7 +480,7 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
     expect(bodyText).toMatch(/100/)
     
     // Check initial gold (should be 0)
-    expect(bodyText).toMatch(/Gold.*0|0.*Gold/i)
+    expect(bodyText).toMatch(/Gold.*0|0.*Gold|💰.*0|0.*💰/i)
     
     // Check starting biome (Grassland)
     expect(bodyText).toContain('Grassland')

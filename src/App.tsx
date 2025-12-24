@@ -36,7 +36,7 @@ import {
 // Local components
 import { TitleScreen, GameHUD, PauseMenu, GameOverScreen, Player, EnemySystem, CombatSystem } from './components'
 import { useGameStore } from './store/gameStore'
-import { WeatherType, QuestType } from './types/game'
+import { WeatherType } from './types/game'
 import { generateQuest } from './features/questSystem'
 import { triggerRandomEvent } from './features/eventSystem'
 import { useEffect } from 'react'

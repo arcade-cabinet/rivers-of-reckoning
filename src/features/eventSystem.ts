@@ -30,7 +30,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
   },
 ]
 
-export const triggerRandomEvent = (store: any) => {
+export const triggerRandomEvent = (store: { healPlayer: (amount: number) => void; addGold: (amount: number) => void }) => {
   const event = RANDOM_EVENTS[Math.floor(Math.random() * RANDOM_EVENTS.length)]
   event.onTrigger(store)
   return event

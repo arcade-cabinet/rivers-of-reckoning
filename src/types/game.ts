@@ -222,6 +222,7 @@ export interface RandomEvent {
   title: string
   description: string
   type: EventType
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTrigger: (store: any) => void
 }
 
