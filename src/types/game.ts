@@ -218,4 +218,23 @@ export interface WorldState {
   seed: number
 }
 
-export type GameState = 'title' | 'playing' | 'paused' | 'gameover' | 'boss'
+export type GameState = 'title' | 'playing' | 'paused' | 'gameover' | 'boss' | 'settings' | 'features'
+
+export interface GameSettings {
+  masterVolume: number
+  musicVolume: number
+  sfxVolume: number
+  showFPS: boolean
+  renderDistance: number
+  invertY: boolean
+  sensitivity: number
+}
+
+export interface GameFeatures {
+  postProcessing: boolean
+  shadows: boolean
+  vegetation: boolean
+  waterReflections: boolean
+  dynamicWeather: boolean
+  dayNightCycle: boolean
+}
