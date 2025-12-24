@@ -65,6 +65,7 @@ export function GameHUD() {
     <>
       {/* Top HUD Bar */}
       <div
+        id="game-hud-top"
         style={{
           position: 'fixed',
           top: 0,
