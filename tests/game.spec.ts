@@ -506,4 +506,34 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
       expect(canvasBox.height).toBeGreaterThan(viewport.height * 0.5)
     }
   })
+
+  test('mobile joysticks appear on touch devices', async ({ page, isMobile }) => {
+    // This test only makes sense on mobile/touch devices
+    if (!isMobile) {
+      return
+    }
+
+    // Start the game
+    await page.waitForTimeout(500)
+    const startButton = page.getByRole('button', { name: /start/i })
+    await startButton.click()
+    
+    await page.waitForSelector('canvas', { timeout: 10000 })
+    await page.waitForTimeout(1000)
+
+    // Simulate touch to ensure isTouchDevice is true
+    await page.touchscreen.tap(100, 100)
+    await page.waitForTimeout(500)
+    
+    // Check for joysticks (two VirtualJoystick components)
+    // They are divs with fixed position and z-index 1000
+    const joysticks = page.locator('div[style*="z-index: 1000"]')
+    const count = await joysticks.count()
+    
+    // Expect at least one joystick (left movement)
+    expect(count).toBeGreaterThanOrEqual(1)
+    
+    // Screenshot showing joysticks
+    await page.screenshot({ path: 'tests/screenshots/mobile-joysticks.png' })
+  })
 })
