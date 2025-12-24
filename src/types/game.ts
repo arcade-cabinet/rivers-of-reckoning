@@ -218,4 +218,21 @@ export interface WorldState {
   seed: number
 }
 
-export type GameState = 'title' | 'playing' | 'paused' | 'gameover' | 'boss'
+export interface GameSettings {
+  masterVolume: number
+  musicVolume: number
+  sfxVolume: number
+  fov: number
+  showFPS: boolean
+  renderDistance: number
+}
+
+export interface FeatureToggles {
+  debugMode: boolean
+  infiniteStamina: boolean
+  invincibility: boolean
+  showMiniMap: boolean
+  showCoordinates: boolean
+}
+
+export type GameState = 'title' | 'playing' | 'paused' | 'gameover' | 'boss' | 'settings' | 'features'

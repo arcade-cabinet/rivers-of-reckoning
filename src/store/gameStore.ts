@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand'
-import { subscribeWithSelector } from 'zustand/middleware'
+import { subscribeWithSelector, persist } from 'zustand/middleware'
 import {
   BiomeType,
   TimePhase,
@@ -17,13 +17,22 @@ import {
   TimeOfDay,
   Weather,
   WorldState,
+  GameSettings,
+  FeatureToggles,
 } from '../types/game'
-import { PLAYER, TIME, WEATHER, LEVELING } from '../constants/game'
+import { PLAYER, TIME, WEATHER, LEVELING, SETTINGS, FEATURES } from '../constants/game'
 
 interface GameStore {
   // Game state
   gameState: GameState
   setGameState: (state: GameState) => void
+  isInGame: boolean
+
+  // Settings & Features
+  settings: GameSettings
+  features: FeatureToggles
+  updateSettings: (settings: Partial<GameSettings>) => void
+  updateFeatures: (features: Partial<FeatureToggles>) => void
 
   // Player
   playerPosition: Position
@@ -119,12 +128,36 @@ const getRandomWeather = (seed: number): WeatherType => {
 }
 
 export const useGameStore = create<GameStore>()(
-  subscribeWithSelector((set, get) => ({
-    // Initial game state
-    gameState: 'title',
-    setGameState: (state) => set({ gameState: state }),
+  subscribeWithSelector(
+    persist(
+      (set, get) => ({
+        // Initial game state
+        gameState: 'title',
+        setGameState: (state) => set({ gameState: state }),
+        isInGame: false,
 
-    // Player initial state (using constants)
+        // Settings & Features
+        settings: {
+          masterVolume: SETTINGS.DEFAULT_MASTER_VOLUME,
+          musicVolume: SETTINGS.DEFAULT_MUSIC_VOLUME,
+          sfxVolume: SETTINGS.DEFAULT_SFX_VOLUME,
+          fov: SETTINGS.DEFAULT_FOV,
+          showFPS: false,
+          renderDistance: SETTINGS.DEFAULT_RENDER_DISTANCE,
+        },
+        features: {
+          debugMode: FEATURES.DEFAULT_DEBUG_MODE,
+          infiniteStamina: FEATURES.DEFAULT_INFINITE_STAMINA,
+          invincibility: FEATURES.DEFAULT_INVINCIBILITY,
+          showMiniMap: FEATURES.DEFAULT_SHOW_MINIMAP,
+          showCoordinates: FEATURES.DEFAULT_SHOW_COORDINATES,
+        },
+        updateSettings: (newSettings) =>
+          set((state) => ({ settings: { ...state.settings, ...newSettings } })),
+        updateFeatures: (newFeatures) =>
+          set((state) => ({ features: { ...state.features, ...newFeatures } })),
+
+        // Player initial state (using constants)
     playerPosition: { x: 0, y: 0, z: 0 },
     playerHealth: { 
       current: PLAYER.INITIAL_HEALTH, 
@@ -175,6 +208,8 @@ export const useGameStore = create<GameStore>()(
 
     damagePlayer: (amount) =>
       set((state) => {
+        if (state.features.invincibility) return {}
+        
         const newHealth = Math.max(0, state.playerHealth.current - amount)
         if (newHealth <= 0) {
           return {
@@ -361,6 +396,7 @@ export const useGameStore = create<GameStore>()(
     startGame: (seed) =>
       set({
         gameState: 'playing',
+        isInGame: true,
         playerPosition: { x: 0, y: 0, z: 0 },
         playerHealth: { 
           current: PLAYER.INITIAL_HEALTH, 
@@ -407,6 +443,15 @@ export const useGameStore = create<GameStore>()(
     pauseGame: () => set({ gameState: 'paused' }),
     resumeGame: () => set({ gameState: 'playing' }),
     endGame: () => set({ gameState: 'gameover' }),
-    resetGame: () => set({ gameState: 'title' }),
-  }))
+    resetGame: () => set({ gameState: 'title', isInGame: false }),
+  }),
+  {
+    name: 'rivers-of-reckoning-storage',
+    partialize: (state) => ({
+      settings: state.settings,
+      features: state.features,
+    }),
+  }
+)
+)
 )

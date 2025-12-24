@@ -121,3 +121,23 @@ export const CAMERA = {
   MAX_DISTANCE: 50,
   DAMPING_FACTOR: 0.05,
 } as const
+
+// =============================================================================
+// UI & SETTINGS CONSTANTS
+// =============================================================================
+
+export const SETTINGS = {
+  DEFAULT_MASTER_VOLUME: 0.8,
+  DEFAULT_MUSIC_VOLUME: 0.6,
+  DEFAULT_SFX_VOLUME: 0.7,
+  DEFAULT_FOV: 60,
+  DEFAULT_RENDER_DISTANCE: 200,
+} as const
+
+export const FEATURES = {
+  DEFAULT_DEBUG_MODE: false,
+  DEFAULT_INFINITE_STAMINA: false,
+  DEFAULT_INVINCIBILITY: false,
+  DEFAULT_SHOW_MINIMAP: true,
+  DEFAULT_SHOW_COORDINATES: false,
+} as const

@@ -3,11 +3,11 @@
  */
 
 import { Typography, Button, Container, Stack } from '@mui/material'
-import { PlayArrow, Home, Settings } from '@mui/icons-material'
+import { PlayArrow, Home, Settings, Construction } from '@mui/icons-material'
 import { useGameStore } from '../store/gameStore'
 
 export function PauseMenu() {
-  const { resumeGame, resetGame } = useGameStore()
+  const { resumeGame, resetGame, setGameState } = useGameStore()
 
   return (
     <div
@@ -70,15 +70,40 @@ export function PauseMenu() {
               variant="outlined"
               fullWidth
               startIcon={<Settings />}
-              disabled
+              onClick={() => setGameState('settings')}
               sx={{
                 py: 1.5,
                 fontFamily: '"Press Start 2P", monospace',
                 fontSize: '0.7rem',
-                borderColor: '#666',
+                borderColor: '#4CAF50',
+                color: '#4CAF50',
+                '&:hover': {
+                  borderColor: '#8BC34A',
+                  background: 'rgba(76, 175, 80, 0.1)',
+                },
               }}
             >
               SETTINGS
+            </Button>
+
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<Construction />}
+              onClick={() => setGameState('features')}
+              sx={{
+                py: 1.5,
+                fontFamily: '"Press Start 2P", monospace',
+                fontSize: '0.7rem',
+                borderColor: '#FF9800',
+                color: '#FF9800',
+                '&:hover': {
+                  borderColor: '#FFB74D',
+                  background: 'rgba(255, 152, 0, 0.1)',
+                },
+              }}
+            >
+              FEATURES
             </Button>
 
             <Button

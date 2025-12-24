@@ -11,7 +11,7 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Stats, Loader } from '@react-three/drei'
 import { Suspense, useMemo, useRef, useCallback } from 'react'
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material'
+import { ThemeProvider, createTheme, CssBaseline, Fade, Box } from '@mui/material'
 import * as THREE from 'three'
 
 // Strata imports - using REAL API only
@@ -34,7 +34,17 @@ import {
 } from '@jbcom/strata'
 
 // Local components
-import { TitleScreen, GameHUD, PauseMenu, GameOverScreen, Player, EnemySystem, CombatSystem } from './components'
+import { 
+  TitleScreen, 
+  GameHUD, 
+  PauseMenu, 
+  GameOverScreen, 
+  SettingsMenu,
+  FeatureMenu,
+  Player, 
+  EnemySystem, 
+  CombatSystem 
+} from './components'
 import { useGameStore } from './store/gameStore'
 import { WeatherType } from './types/game'
 
@@ -405,7 +415,7 @@ function Scene() {
       />
 
       {/* Dev stats - shown in development mode */}
-      <Stats />
+      {/* <Stats /> - Moved to App root for settings control */}
     </>
   )
 }
@@ -415,37 +425,63 @@ function Scene() {
 // =============================================================================
 
 export default function App() {
-  const { gameState } = useGameStore()
+  const { gameState, isInGame, settings } = useGameStore()
 
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       
-      {/* Title Screen */}
-      {gameState === 'title' && <TitleScreen />}
+      {/* Overlay Screens */}
+      <Fade in={gameState === 'title'} mountOnEnter unmountOnExit>
+        <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2000 }}>
+          <TitleScreen />
+        </Box>
+      </Fade>
       
-      {/* Game Over Screen */}
-      {gameState === 'gameover' && <GameOverScreen />}
+      <Fade in={gameState === 'gameover'} mountOnEnter unmountOnExit>
+        <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2000 }}>
+          <GameOverScreen />
+        </Box>
+      </Fade>
+      
+      <Fade in={gameState === 'settings'} mountOnEnter unmountOnExit>
+        <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2000 }}>
+          <SettingsMenu />
+        </Box>
+      </Fade>
+      
+      <Fade in={gameState === 'features'} mountOnEnter unmountOnExit>
+        <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2000 }}>
+          <FeatureMenu />
+        </Box>
+      </Fade>
       
       {/* Main Game */}
-      {(gameState === 'playing' || gameState === 'paused') && (
+      {isInGame && (
         <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
           {/* HUD Overlay */}
           <GameHUD />
           
           {/* Pause Menu */}
-          {gameState === 'paused' && <PauseMenu />}
+          <Fade in={gameState === 'paused'} mountOnEnter unmountOnExit>
+            <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1000 }}>
+              <PauseMenu />
+            </Box>
+          </Fade>
           
           {/* 3D Canvas */}
           <Canvas
             shadows
-            camera={{ position: [40, 30, 40], fov: 60 }}
+            camera={{ position: [40, 30, 40], fov: settings.fov }}
             style={{ background: 'linear-gradient(to bottom, #1a1a2e, #16213e)' }}
           >
             <Suspense fallback={null}>
               <Scene />
             </Suspense>
           </Canvas>
+          
+          {/* FPS Counter from Settings */}
+          {settings.showFPS && <Stats />}
         </div>
       )}
 

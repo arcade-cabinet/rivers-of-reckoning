@@ -2,12 +2,12 @@
  * Title Screen - Ported from game.py draw_title()
  */
 
-import { Typography, Button, Container, List, ListItem, ListItemIcon, ListItemText } from '@mui/material'
-import { PlayArrow, Star } from '@mui/icons-material'
+import { Typography, Button, Container, List, ListItem, ListItemIcon, ListItemText, Stack } from '@mui/material'
+import { PlayArrow, Star, Settings, Construction } from '@mui/icons-material'
 import { useGameStore } from '../store/gameStore'
 
 export function TitleScreen() {
-  const { startGame } = useGameStore()
+  const { startGame, setGameState } = useGameStore()
 
   const handleStart = () => {
     // Resume audio context for browser autoplay restrictions
@@ -100,27 +100,70 @@ export function TitleScreen() {
           ))}
         </List>
 
-        {/* Start Button */}
-        <Button
-          variant="contained"
-          size="large"
-          startIcon={<PlayArrow />}
-          onClick={handleStart}
-          sx={{
-            px: 6,
-            py: 2,
-            fontSize: '1.2rem',
-            fontFamily: '"Press Start 2P", monospace',
-            background: 'linear-gradient(45deg, #4CAF50 30%, #8BC34A 90%)',
-            boxShadow: '0 0 20px rgba(76, 175, 80, 0.5)',
-            '&:hover': {
-              background: 'linear-gradient(45deg, #66BB6A 30%, #9CCC65 90%)',
-              boxShadow: '0 0 30px rgba(76, 175, 80, 0.8)',
-            },
-          }}
-        >
-          START GAME
-        </Button>
+        {/* Actions */}
+        <Stack spacing={2} sx={{ maxWidth: 300, mx: 'auto' }}>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<PlayArrow />}
+            onClick={handleStart}
+            sx={{
+              py: 2,
+              fontSize: '1rem',
+              fontFamily: '"Press Start 2P", monospace',
+              background: 'linear-gradient(45deg, #4CAF50 30%, #8BC34A 90%)',
+              boxShadow: '0 0 20px rgba(76, 175, 80, 0.5)',
+              '&:hover': {
+                background: 'linear-gradient(45deg, #66BB6A 30%, #9CCC65 90%)',
+                boxShadow: '0 0 30px rgba(76, 175, 80, 0.8)',
+              },
+            }}
+          >
+            START GAME
+          </Button>
+
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<Settings />}
+              onClick={() => setGameState('settings')}
+              sx={{
+                py: 1.5,
+                fontFamily: '"Press Start 2P", monospace',
+                fontSize: '0.6rem',
+                borderColor: '#2196F3',
+                color: '#2196F3',
+                '&:hover': {
+                  borderColor: '#4FC3F7',
+                  background: 'rgba(33, 150, 243, 0.1)',
+                },
+              }}
+            >
+              SETTINGS
+            </Button>
+
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<Construction />}
+              onClick={() => setGameState('features')}
+              sx={{
+                py: 1.5,
+                fontFamily: '"Press Start 2P", monospace',
+                fontSize: '0.6rem',
+                borderColor: '#FF9800',
+                color: '#FF9800',
+                '&:hover': {
+                  borderColor: '#FFB74D',
+                  background: 'rgba(255, 152, 0, 0.1)',
+                },
+              }}
+            >
+              FEATURES
+            </Button>
+          </Stack>
+        </Stack>
 
         {/* Controls hint */}
         <Typography

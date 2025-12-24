@@ -1,6 +1,8 @@
 export { TitleScreen } from './TitleScreen'
 export { GameOverScreen } from './GameOverScreen'
 export { PauseMenu } from './PauseMenu'
+export { SettingsMenu } from './SettingsMenu'
+export { FeatureMenu } from './FeatureMenu'
 export { GameHUD } from './GameHUD'
 export { Player } from './Player'
 export { EnemySystem } from './Enemy'
