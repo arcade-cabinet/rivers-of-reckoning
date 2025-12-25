@@ -38,27 +38,15 @@ gh run view <run-id> --log
 
 ```bash
 # Python
-uv sync && uv run pytest
-
-# TypeScript
-pnpm install && pnpm run build
-
-# Go
-go mod download && go build ./...
+python -m pip install .
+python -m pygbag --build .
 ```
 
 ### Lint Failures
 
 ```bash
 # Python
-uvx ruff check --fix .
-uvx ruff format .
-
-# TypeScript
-pnpm run lint:fix
-
-# Go
-golangci-lint run --fix
+flake8 src/
 ```
 
 ### Test Failures
@@ -74,11 +62,8 @@ These secrets power CI/CD:
 
 | Secret | Purpose |
 |--------|---------|
-| `CI_GITHUB_TOKEN` | GitHub API access |
+| `GITHUB_TOKEN` | GitHub API access |
 | `PYPI_TOKEN` | PyPI publishing |
-| `NPM_TOKEN` | npm publishing |
-| `DOCKERHUB_USERNAME` | Docker Hub login |
-| `DOCKERHUB_TOKEN` | Docker Hub publishing |
 
 ## Troubleshooting
 

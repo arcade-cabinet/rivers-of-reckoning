@@ -101,14 +101,12 @@ DrawFunc = Callable[[], None]
 
 ## Package Management
 
-- **Tool**: uv
 - **Config**: `pyproject.toml`
-- **Lock file**: `uv.lock` (always commit)
+- **Lock file**: `uv.lock` (legacy, transition to standard pip/pyproject)
 
 ```bash
-uv sync                 # Install deps
-uv add pygame-ce        # Add dependency
-uv lock                 # Update lockfile
+pip install -e .        # Install local dev
+pip install pygame-ce   # Add dependency
 ```
 
 ## Testing

@@ -45,21 +45,22 @@ Reviews code for quality, security, and best practices.
 ### Common Issues to Check
 
 #### Division by Zero
-```
-// BAD
-result = a / b;
+```python
+# BAD
+result = a / b
 
-// GOOD
-result = b !== 0 ? a / b : 0;
+# GOOD
+result = a / b if b != 0 else 0
 ```
 
 #### Null/Undefined Access
-```
-// BAD
-value = obj.prop.nested;
+```python
+# BAD
+value = obj.prop.nested
 
-// GOOD
-value = obj?.prop?.nested ?? defaultValue;
+# GOOD
+value = getattr(getattr(obj, 'prop', None), 'nested', defaultValue)
+# OR using a safer pattern
 ```
 
 ### Review Comment Format

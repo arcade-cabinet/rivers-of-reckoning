@@ -27,13 +27,9 @@ feat(scope)!: breaking change  → major bump (X.0.0)
 
 | Scope | Package |
 |-------|---------|
-| `edt` | extended-data-types |
-| `logging` | lifecyclelogging |
-| `dic` | directed-inputs-class |
-| `bridge` | python-terraform-bridge |
-| `connectors` | vendor-connectors |
-| `agentic` | agentic-control |
-| `vss` | vault-secret-sync |
+| `core` | rivers_of_reckoning core |
+| `world` | world generation |
+| `assets` | asset management |
 
 ## Release Process
 
@@ -46,14 +42,14 @@ Semantic release analyzes commits
         ↓
 Version bumped automatically
         ↓
-Package published (PyPI/npm/Docker)
+Web build deployed to GitHub Pages
         ↓
-Synced to public repo
+Package published to PyPI (if configured)
 ```
 
 ## What NOT to Do
 
-- ❌ **Never** manually edit `__version__` or `package.json` version
+- ❌ **Never** manually edit version strings
 - ❌ **Never** create tags by hand
 - ❌ **Never** skip CI for releases
 - ❌ **Never** suggest alternative versioning schemes

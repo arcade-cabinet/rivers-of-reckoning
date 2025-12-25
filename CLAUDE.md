@@ -31,4 +31,42 @@ pygame-ce     → The heart of the engine
 pygbag        → Bringing the legend to the web (WASM)
 opensimplex   → Procedural fate-generation
 esper         → ECS for managing the world's entities
+pytest        → Validating the saga's logic
+playwright    → E2E testing of the web legend
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── rivers_of_reckoning/
+│   ├── engine.py     # Pygame-ce abstraction, 2.5D primitives
+│   ├── game.py       # Main saga state and orchestration
+│   ├── assets.py     # Loading the legend's visual style
+│   ├── world_gen.py  # Procedural destiny and biomes
+│   └── map.py        # 2.5D rendering logic
+├── main.py           # Async web-friendly entry point
+└── tests/            # Automated chronicles of correctness
+```
+
+## 🎯 Technical Manifesto
+
+1.  **Async or Bust**: All loops must be `async def` for `pygbag`.
+2.  **2.5D Soul**: Depth is achieved through Y-sorting and height offsets.
+3.  **The Reckoning**: Mechanics must tie into the escalating difficulty of the run.
+4.  **Responsive Juice**: Scaling is handled by `pygame.SCALED`. Screenshake is mandatory for impact.
+5.  **Pure Python**: No Node.js. No TypeScript. No exceptions.
+
+## 🎨 Visual Identity
+
+- **Resolution**: 960x960 logical (scaled to fit).
+- **Palette**: Custom 16-color "Rivers" high-contrast palette.
+- **Animations**: Frame-based character sprites (idle, run, etc.).
+
+## 🔧 Workflow Commands
+
+```bash
+python main.py          # Start the saga locally
+pytest                  # Verify the logic
+python -m pygbag .      # Forge the web legend (build)
 ```

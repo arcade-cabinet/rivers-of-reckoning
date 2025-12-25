@@ -15,8 +15,9 @@ alwaysApply: true
 1. **Web-First**: Browser is primary. No desktop-only features.
 2. **One Entry Point**: `main.py` only. No alternate entry points.
 3. **Async Always**: All code pygbag-compatible (async/await).
-4. **Responsive**: Auto-scales to any screen via `pygame.SCALED`.
+4. **Responsive**: Auto-scales to any screen via `pygame.SCALED` at 960x960 logical resolution.
 5. **Procedural**: No hardcoded content. Everything from seeds.
+6. **2.5D Perspective**: Use grid-based depth simulation (Y-sorting). No 3D.
 
 ### Tech Stack
 

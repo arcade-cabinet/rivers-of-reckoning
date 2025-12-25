@@ -14,24 +14,11 @@ Runs and manages tests for the repository.
 
 ### Running Tests
 
-Check the project's package.json or Makefile for available test commands.
-
 Common patterns:
 ```bash
-# Node.js projects
-npm test
-pnpm test
-yarn test
-
 # Python projects
 pytest
 python -m pytest
-
-# Go projects
-go test ./...
-
-# General
-make test
 ```
 
 ### Test File Locations
