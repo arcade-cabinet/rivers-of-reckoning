@@ -262,8 +262,9 @@ jobs:
 
       - name: Determine Reviewer
         id: reviewer
+        env:
+          COMMENT: ${{ github.event.comment.body }}
         run: |
-          COMMENT="${{ github.event.comment.body }}"
           if [[ "$COMMENT" == *"@claude"* ]] || [[ "$COMMENT" == *"/review claude"* ]]; then
             echo "reviewer=claude" >> $GITHUB_OUTPUT
           elif [[ "$COMMENT" == *"@codex"* ]] || [[ "$COMMENT" == *"/review codex"* ]]; then
