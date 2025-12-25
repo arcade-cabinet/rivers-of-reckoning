@@ -47,7 +47,6 @@ def test_sprite_functions():
     except Exception as e:
         print(f"✗ Sprite test failed: {e}")
         raise
-        return False
 
 
 def test_game_components():
@@ -80,7 +79,6 @@ def test_game_components():
     except Exception as e:
         print(f"✗ Game component test failed: {e}")
         raise
-        return False
 
 
 def main():

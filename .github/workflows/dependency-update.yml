@@ -124,4 +124,4 @@ jobs:
         python -m pip install --upgrade pip
         pip install tox tox-gh-actions
         pip install -e .
-        tox -e py312
+        tox -e py310
