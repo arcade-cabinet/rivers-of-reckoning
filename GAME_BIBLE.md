@@ -1,87 +1,70 @@
-# 📖 The Game Bible: Rivers of Reckoning
+# 📖 The Game Bible: Rivers of Reckoning (The Saga)
 
 ## 🌊 Core Vision: The Saga of Rivers
-**Rivers of Reckoning** is a character-driven, 2.5D hostile survival roguelike. It follows the legend of **Rivers**, a hero navigating an infinite, procedurally generated world that actively resists his presence. The game is a standalone Python experience, honoring its roots as a logic-teaching tool by prioritizing clear gameplay mechanics and tactical depth over complex geometry.
+**Rivers of Reckoning** is a character-driven, **Classic 2.5D RPG**. It follows the legend of **Rivers**, a hero on a quest through a perilous world. Unlike generic roguelikes, this is a **Saga**—focused on progression, discovery, and the mastery of the world's physical forces. It honors its origins as a logic-teaching tool by maintaining a clean, grid-based logic while delivering a high-impact visual experience.
 
 ---
 
-## 🎭 The Core Message: "The Hero's Code"
-**Rivers of Reckoning** is an evolution of a programming journey. It was originally a text-based grid used to teach the core logic of conditional movement and state. In its current form, it represents the **Logic of Survival**. The core message is that every action has a consequence, and mastery comes from understanding the underlying "code" of the world.
+## 🎭 The Core Message: "The Hero's Quest"
+The game is about overcoming obstacles through logic and skill. The world is a series of trials where the environment itself (The Flow) and the rising danger (The Destiny) test the hero's resolve. The goal is to survive the journey and complete the saga, not just delay an inevitable death.
 
 ---
 
-## 📜 The Genesis: From Curses to 2.5D Roguelike
-The game's identity is rooted in its transition from a **primitive RPG** to a **true Roguelike**.
-
-### The Rogue-like Evolution:
-1.  **Permadeath**: Unlike the early RPG roots where you might just "reset" a level, the Saga of Rivers treats every run as a final legend. When you fall, the run ends, and your legacy is recorded.
-2.  **Procedural Purity**: The original used hardcoded paths. The Roguelike version uses infinite **FBM noise** to ensure no two journeys are ever the same.
-3.  **The Reckoning (Turn-based Escalation)**: The game evolved from "moving around" to "surviving the clock." Every turn increases the **Destiny Meter**, forcing tactical urgency.
-4.  **2.5D Logic-First Gameplay**: We preserve the "logic-first" feel of the curses era by keeping all gameplay grid-locked while using 2.5D rendering to provide modern visual depth.
-### "Grim Legend" Style
-- **Perspective**: Strictly **2.5D**. Grid-based logic with visual height offsets and dynamic shadows to create depth.
+## 🎨 Branding & Aesthetic
+### "High-Contrast Saga" Style
+- **Perspective**: **2.5D Grid**. Precise, logic-first movement with visual depth via Y-sorting and height-based shadows.
+- **Visuals**: A blend of pixel art and atmospheric primitive shapes.
 - **Palette**: Branded 16-color "Rivers" palette.
-    - **Deep Void (0)**: Backgrounds, shadows, the unknown.
-    - **Reckoning Red (8)**: Rivers (hero), damage, danger.
-    - **Sulfur (10)**: Eyes, items, magical light.
-    - **Poison Ivy (11)**: Hostile nature, corruption.
-- **Juice & Feedback**: 
-    - Violent screen shake for heavy impacts.
-    - Pulse animations for HUD elements.
-    - Flow particles representing environmental forces.
+    - **Deep Void (0)**: The unknown and shadows.
+    - **Reckoning Red (8)**: Rivers (hero) and danger.
+    - **Sulfur (10)**: Magical light and artifacts.
+    - **Poison Ivy (11)**: Hostile nature.
+- **Juice**: Screen shake, text pulses, and "impact" frames for every heroic action.
 
 ---
 
 ## ⚔️ Gameplay Mechanics
-### 1. The Destiny Meter (The Reckoning)
-- A global danger level that increases with every player move (turn-based urgency).
-- **Destiny Surges**: Major environmental events triggered at milestones. They shake the world and inflict immediate trials.
-- **Urgency Mechanic**: The longer you stay in one area, the more the world "reckons" against you, preventing safe grinding.
+### 1. The Saga Progression
+- **Level-Based World**: The world is divided into distinct regions (The Forsaken Path, The Iron Woods, etc.), each with its own "Boss Trial."
+- **Persistent Growth**: Rivers gains permanent strength, gear, and spells that persist throughout the saga.
+- **Victory Condition**: Reaching the end of the saga, rather than just "high score" distance.
 
 ### 2. The Flow of Fate
-- Procedural "flow fields" derived from moisture noise.
-- Unlike static terrain, the "Flow" physically pushes Rivers when he enters certain tiles.
-- **Tactical Navigation**: Players must "surf" the flow to move faster or fight against it to reach secrets, adding a physical layer to grid movement.
+- A physical movement mechanic where "Fate" (water/currents) physically pushes objects.
+- **Tactical Navigation**: Rivers must use the currents to solve movement puzzles and gain the upper hand in combat.
 
-### 3. 2.5D Spatial Logic
-- Logic remains 2D (grid-based) for accessibility and clarity.
-- Rendering uses height offsets (Y-sorting) to allow objects to "tower" over the grid.
-- Shadows are essential for grounding 2.5D objects.
-
-### 4. Perma-death Saga
-- Every run is a unique legend.
-- Progress is measured by the "Legacy" (distance + enemies + secrets).
+### 3. The Destiny Meter
+- A local region threat level. As Rivers spends time in a region, the "Destiny" of that place awakens, increasing enemy strength and environmental hostility.
+- **Trial Surges**: Staying too long triggers a world-shaking event that forces Rivers to move forward.
 
 ---
 
-## 🌍 The World: Procedural Trials
-Biomes are not just geographic; they are thematic trials in the hero's saga.
+## 🌍 The World: The Regions of Reckoning
+The saga takes place across a handcrafted procedural world.
 
-| Biome | Legacy Name | Characteristics |
-|-------|-------------|-----------------|
-| Marsh | **The Forsaken Path** | Heavy Flow, high enemy variety, low visibility. |
-| Forest | **The Iron Woods** | Dense obstacles, high stamina drain, hidden traps. |
-| Desert | **Blistering Wastes** | Open space, high movement cost, heat exhaustion. |
-| Tundra | **The Frozen Veil** | Slippery flow, slow movement, brittle obstacles. |
-| Caves | **The Depths** | Pitch black, high danger, rare sulfur deposits. |
+| Region | Essence | Hazard |
+|-------|---------|--------|
+| **The Forsaken Path** | The beginning of the legend. | Heavy Flow currents. |
+| **The Iron Woods** | Dense, claustrophobic trials. | Hidden traps and thick foliage. |
+| **The Frozen Veil** | A test of endurance. | Slippery ice flow. |
+| **Blistering Wastes** | The peak of the struggle. | High heat and open vulnerability. |
 
 ---
 
 ## 🕹️ Player Experience & UX
-### "Tactile Survival"
-- **High Impact**: Players should feel the weight of their choices. Movement isn't free; combat isn't trivial.
-- **Approachable Logic**: The code and mechanics should be easy to understand but difficult to master (Saga-style).
-- **Responsive HUD**: The **RIVERS** (Health) and **DESTINY** (Threat) bars are central to the screen, providing constant feedback on survival status.
+### "Tactile Heroism"
+- **Grid Mastery**: Every move is deliberate. The player should feel they are "programming" their way through the world's hazards.
+- **Impactful Combat**: Not just stat-checking, but managing positioning relative to Flow and Destiny.
+- **Clarity First**: The HUD clearly shows the hero's status (**RIVERS**) and the region's state (**DESTINY**).
 
 ---
 
 ## 🛠 Technical Manifesto
-- **Language**: Pure Python 3.10+.
-- **Engine**: `pygame-ce` (performance and accessibility).
-- **Deployment**: `pygbag` (instant web play via WASM).
-- **Architecture**: Lightweight ECS (`esper`) to keep data and logic separated for learners.
-- **Resolution**: 256x256 logical pixels, auto-scaled to fill any viewport.
+- **Foundation**: Pure Python 3.10+, `pygame-ce`.
+- **Logic**: Simplified grid-based logic inspired by the original `curses` version.
+- **Deployment**: Optimized for `pygbag` web play.
+- **Architecture**: Modular and readable, serving as a beacon for aspiring programmers.
 
 ---
 
-**"Your legacy is defined by the depth of your Reckoning."**
+**"A legend is not just survived; it is completed."**
