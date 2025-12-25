@@ -14,7 +14,7 @@ class AudioManager {
 
   private init() {
     if (this.ctx) return
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
+    const AudioContextClass = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
     if (AudioContextClass) {
       this.ctx = new AudioContextClass()
     }
@@ -93,9 +93,9 @@ class AudioManager {
     if (this.musicSource) {
       try {
         this.musicSource.stop()
-      } catch (_e) {
-        // Already stopped or not started
-      }
+    } catch {
+      // Already stopped or not started
+    }
       this.musicSource.disconnect()
       this.musicSource = null
     }

@@ -13,11 +13,11 @@ import { combatEvents } from '../events/combatEvents'
 
 // Enemy types with different stats (matches GAME_IDENTITY.md)
 const ENEMY_TYPES = [
-  { name: 'Slime', color: '#4CAF50', speed: 2, damage: 5, health: 20, xp: 10 },
-  { name: 'Goblin', color: '#8BC34A', speed: 4, damage: 8, health: 30, xp: 20 },
-  { name: 'Orc', color: '#795548', speed: 3, damage: 15, health: 50, xp: 35 },
-  { name: 'Wraith', color: '#9C27B0', speed: 5, damage: 12, health: 25, xp: 30 },
-  { name: 'Wolf', color: '#607D8B', speed: 6, damage: 10, health: 35, xp: 25 },
+  { name: 'Slime', color: '#4CAF50', speed: 2, damage: 2, health: 20, xp: 10 },
+  { name: 'Goblin', color: '#8BC34A', speed: 4, damage: 4, health: 30, xp: 20 },
+  { name: 'Orc', color: '#795548', speed: 3, damage: 8, health: 50, xp: 35 },
+  { name: 'Wraith', color: '#9C27B0', speed: 5, damage: 6, health: 25, xp: 30 },
+  { name: 'Wolf', color: '#607D8B', speed: 6, damage: 5, health: 35, xp: 25 },
 ] as const
 
 // Seeded random for deterministic spawning
@@ -71,8 +71,17 @@ export function EnemySystem({
 
     for (let i = 0; i < count; i++) {
       const type = ENEMY_TYPES[rng.nextInt(ENEMY_TYPES.length)]
-      const x = (rng.next() - 0.5) * ENEMY.SPAWN_AREA_SIZE
-      const z = (rng.next() - 0.5) * ENEMY.SPAWN_AREA_SIZE
+      
+      // Ensure enemies don't spawn too close to the player (0,0)
+      let x = 0, z = 0, dist = 0
+      let attempts = 0
+      do {
+        x = (rng.next() - 0.5) * ENEMY.SPAWN_AREA_SIZE
+        z = (rng.next() - 0.5) * ENEMY.SPAWN_AREA_SIZE
+        dist = Math.sqrt(x * x + z * z)
+        attempts++
+      } while (dist < 30 && attempts < 10)
+
       const y = heightFunction(x, z) + 0.5
       const enemyRng = new SeededRandom(seed + i * 1000)
 
@@ -92,7 +101,7 @@ export function EnemySystem({
   })
   
   const enemiesRef = useRef<EnemyData[]>(enemies)
-  const meshRefs = useRef<Map<number, THREE.Mesh>>(new Map())
+  const meshRefs = useRef<Map<number, THREE.Sprite>>(new Map())
   const healthBarRefs = useRef<Map<number, THREE.Mesh>>(new Map())
   const healthBarBgRefs = useRef<Map<number, THREE.Mesh>>(new Map())
   const lastAttackRef = useRef<Map<number, number>>(new Map())
@@ -239,7 +248,7 @@ export function EnemySystem({
             {/* Enemy Sprite */}
             <sprite
               ref={(ref) => {
-                if (ref) meshRefs.current.set(enemy.id, ref as any)
+                if (ref) meshRefs.current.set(enemy.id, ref)
                 else meshRefs.current.delete(enemy.id)
               }}
               position={enemy.position}
