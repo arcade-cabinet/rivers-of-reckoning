@@ -91,7 +91,7 @@ def test_player_gameover_condition():
 # --- Procedural Game Simulation ---
 def test_procedural_game_simulation():
     """Test that game starts with fully procedural generation."""
-    from rivers_of_reckoning.game import Game
+    from rivers_of_reckoning.game import Game  # noqa: F401, F811
 
     g = Game(test_mode=True)
     g.start_game()
@@ -119,6 +119,8 @@ def test_procedural_game_simulation():
 
 def test_game_headless_mode_player_movement_and_events():
     """Test player movement and events in headless mode."""
+    from rivers_of_reckoning.game import Game
+    
     g = Game(test_mode=True)
     g.start_game()
     g.state = "playing"

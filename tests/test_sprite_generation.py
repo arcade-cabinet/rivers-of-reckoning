@@ -75,10 +75,12 @@ def test_game_components():
         print("✓ Boss system imported successfully")
 
         print("✓ All game components imported successfully")
+        return True
 
     except Exception as e:
         print(f"✗ Game component test failed: {e}")
         raise
+        return False
 
 
 def main():
@@ -86,8 +88,9 @@ def main():
     print("Running sprite procedural generation tests...")
 
     success = True
-    success &= test_sprite_functions()
-    success &= test_game_components()
+    result1 = test_sprite_functions()
+    result2 = test_game_components()
+    success = result1 and result2 if result1 is not None and result2 is not None else True
 
     if success:
         print("\n✓ All tests passed! Sprite procedural generation is working correctly.")
