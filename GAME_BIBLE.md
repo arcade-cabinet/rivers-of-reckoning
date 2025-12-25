@@ -5,12 +5,19 @@
 
 ---
 
-## 🎭 The Core Message: "The Toll of the Journey"
-Every step forward has a price. The world is not a static backdrop; it is a living antagonist that reacts to Rivers' progress. The core loop revolves around balancing exploration and growth against the inevitable escalation of **The Reckoning**.
+## 🎭 The Core Message: "The Hero's Code"
+**Rivers of Reckoning** is an evolution of a programming journey. It was originally a text-based grid used to teach the core logic of conditional movement and state. In its current form, it represents the **Logic of Survival**. The core message is that every action has a consequence, and mastery comes from understanding the underlying "code" of the world.
 
 ---
 
-## 🎨 Branding & Aesthetic
+## 📜 The Genesis: From Curses to 2.5D Roguelike
+The game's identity is rooted in its transition from a **primitive RPG** to a **true Roguelike**.
+
+### The Rogue-like Evolution:
+1.  **Permadeath**: Unlike the early RPG roots where you might just "reset" a level, the Saga of Rivers treats every run as a final legend. When you fall, the run ends, and your legacy is recorded.
+2.  **Procedural Purity**: The original used hardcoded paths. The Roguelike version uses infinite **FBM noise** to ensure no two journeys are ever the same.
+3.  **The Reckoning (Turn-based Escalation)**: The game evolved from "moving around" to "surviving the clock." Every turn increases the **Destiny Meter**, forcing tactical urgency.
+4.  **2.5D Logic-First Gameplay**: We preserve the "logic-first" feel of the curses era by keeping all gameplay grid-locked while using 2.5D rendering to provide modern visual depth.
 ### "Grim Legend" Style
 - **Perspective**: Strictly **2.5D**. Grid-based logic with visual height offsets and dynamic shadows to create depth.
 - **Palette**: Branded 16-color "Rivers" palette.
@@ -27,9 +34,9 @@ Every step forward has a price. The world is not a static backdrop; it is a livi
 
 ## ⚔️ Gameplay Mechanics
 ### 1. The Destiny Meter (The Reckoning)
-- A global danger level that increases over time and distance traveled.
-- **Destiny Surges**: Major environmental events triggered at milestones. They shake the world and inflict immediate trials (damage or status effects).
-- **Difficulty Scaling**: Enemy strength and spawn frequency scale directly with Destiny.
+- A global danger level that increases with every player move (turn-based urgency).
+- **Destiny Surges**: Major environmental events triggered at milestones. They shake the world and inflict immediate trials.
+- **Urgency Mechanic**: The longer you stay in one area, the more the world "reckons" against you, preventing safe grinding.
 
 ### 2. The Flow of Fate
 - Procedural "flow fields" derived from moisture noise.
