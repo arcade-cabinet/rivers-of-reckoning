@@ -41,7 +41,7 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
     await page.waitForSelector('canvas', { timeout: 10000 })
     
     // Verify canvas exists
-    const canvas = page.locator('canvas')
+    const canvas = page.locator('#root canvas')
     await expect(canvas).toBeVisible()
     
     // Take screenshot of game started
@@ -133,7 +133,7 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
     await page.waitForSelector('canvas', { timeout: 10000 })
     await page.waitForTimeout(1000)
     
-    const canvas = page.locator('canvas')
+    const canvas = page.locator('#root canvas')
     const box = await canvas.boundingBox()
     
     if (box) {
@@ -265,7 +265,7 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
     await page.keyboard.up('a')
     
     // Verify game is still running
-    const canvas = page.locator('canvas')
+    const canvas = page.locator('#root canvas')
     await expect(canvas).toBeVisible()
     
     // Screenshot after movement
@@ -288,7 +288,7 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
     await page.waitForTimeout(200)
     
     // Verify game is still running
-    const canvas = page.locator('canvas')
+    const canvas = page.locator('#root canvas')
     await expect(canvas).toBeVisible()
     
     // Screenshot after attack
@@ -401,7 +401,7 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
     }
     
     // Game should still be running
-    const canvas = page.locator('canvas')
+    const canvas = page.locator('#root canvas')
     await expect(canvas).toBeVisible()
     
     // Take screenshot after all movements
@@ -496,7 +496,7 @@ test.describe('Rivers of Reckoning - Strata Edition', () => {
     await page.waitForSelector('canvas', { timeout: 10000 })
     await page.waitForTimeout(500)
     
-    const canvas = page.locator('canvas')
+    const canvas = page.locator('#root canvas')
     const viewport = page.viewportSize()
     const canvasBox = await canvas.boundingBox()
     

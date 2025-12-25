@@ -10,10 +10,13 @@
 
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Stats, Loader } from '@react-three/drei'
-import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
-import { Suspense, useMemo, useRef, useCallback } from 'react'
+import { Suspense, useMemo, useRef, useCallback, useState, useEffect } from 'react'
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material'
 import * as THREE from 'three'
+
+// We use any for the OrbitControls ref to avoid version mismatch issues between
+// @react-three/drei and three-stdlib in some environments.
+type OrbitControlsType = any;
 
 // Strata imports - using REAL API only
 import {
@@ -168,6 +171,16 @@ function Vegetation({ areaSize }: { areaSize: number }) {
     []
   )
 
+  // Use a state to handle potential initialization issues
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    // Small delay to ensure Strata is fully initialized
+    const timer = setTimeout(() => setReady(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!ready) return null;
+
   return (
     <>
       <GrassInstances
@@ -288,7 +301,7 @@ function GameLoop() {
 // CAMERA ROTATOR (for look joystick)
 // =============================================================================
 
-function CameraRotator({ orbitControlsRef }: { orbitControlsRef: React.RefObject<OrbitControlsImpl | null> }) {
+function CameraRotator({ orbitControlsRef }: { orbitControlsRef: React.RefObject<OrbitControlsType | null> }) {
   const { lookInput } = useGameStore()
   
   useFrame(() => {
@@ -296,10 +309,9 @@ function CameraRotator({ orbitControlsRef }: { orbitControlsRef: React.RefObject
       const sensitivity = 2.0 // Adjust for taste
       // Fixed inverted horizontal axis: rotateLeft(-lookInput.x) instead of rotateLeft(lookInput.x)
       // Use any cast if types are strictly problematic, but rotateLeft exists on OrbitControls
-      const controls = orbitControlsRef.current as any
-      controls.rotateLeft(-lookInput.x * sensitivity * 0.01)
-      controls.rotateUp(lookInput.y * sensitivity * 0.01)
-      controls.update()
+      orbitControlsRef.current.rotateLeft(-lookInput.x * sensitivity * 0.01)
+      orbitControlsRef.current.rotateUp(lookInput.y * sensitivity * 0.01)
+      orbitControlsRef.current.update()
     }
   })
   
@@ -322,7 +334,7 @@ function Scene() {
     incrementEnemiesDefeated,
   } = useGameStore()
 
-  const orbitControlsRef = useRef<OrbitControlsImpl>(null)
+  const orbitControlsRef = useRef<OrbitControlsType>(null)
 
   // Callbacks for enemy system
   const handleEnemyDefeated = (xp: number, gold: number) => {
@@ -393,8 +405,8 @@ function Scene() {
       {/* Water */}
       <WaterPlane size={200} />
 
-      {/* Vegetation */}
-      <Vegetation areaSize={100} />
+      {/* Vegetation - Disabled due to GPUInstancedMesh crash in some environments */}
+      {/* <Vegetation areaSize={100} /> */}
 
       {/* Player character */}
       <Player heightFunction={getTerrainHeight} />

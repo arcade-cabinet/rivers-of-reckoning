@@ -367,9 +367,19 @@ export const useGameStore = create<GameStore>()(
 
     // Input state
     joystickInput: { x: 0, y: 0 },
-    setJoystickInput: (input) => set({ joystickInput: input }),
+    setJoystickInput: (input) => set({ 
+      joystickInput: { 
+        x: isNaN(input.x) ? 0 : input.x, 
+        y: isNaN(input.y) ? 0 : input.y 
+      } 
+    }),
     lookInput: { x: 0, y: 0 },
-    setLookInput: (input) => set({ lookInput: input }),
+    setLookInput: (input) => set({ 
+      lookInput: { 
+        x: isNaN(input.x) ? 0 : input.x, 
+        y: isNaN(input.y) ? 0 : input.y 
+      } 
+    }),
     isTouchDevice: false,
     setIsTouchDevice: (isTouch) => set({ isTouchDevice: isTouch }),
 
