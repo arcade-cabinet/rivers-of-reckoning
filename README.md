@@ -1,16 +1,22 @@
-# Rivers of Reckoning
+# Rivers of Reckoning [PYTHON STANDALONE]
 
-A retro-style RPG game built with Python and pygame-ce, featuring **fully procedural world generation** using OpenSimplex noise, ECS architecture, dynamic biomes, and web deployment via pygbag.
+> **The Waters are Rising. The Reckoning is Near.**
 
-## 🎮 Features
+An immersive, procedurally generated roguelike RPG built exclusively with **Python and pygame-ce**. Featuring infinite world generation, dynamic river flow mechanics, and the unique "Reckoning" threat system.
 
-- **Infinite Procedural World**: Explore an endless world generated using OpenSimplex noise with natural-looking terrain and biomes
-- **Dynamic Biomes**: Marsh, Forest, Desert, Tundra, and Grassland - each with unique characteristics
-- **ECS Architecture**: Entity Component System design inspired by modern game engines
-- **Weather & Day/Night System**: Dynamic weather changes and time-of-day progression
-- **Retro Aesthetics**: 960x960 pixel display with classic 16-color palette
-- **Web Deployment**: Play in browser via pygbag on GitHub Pages
-- **Cross-Platform**: Desktop (Windows, macOS, Linux) and Web
+## 🌊 Unique Standalone Features
+
+*   **Python Powered**: A dedicated Python-only codebase optimized for performance and web deployment via `pygbag`.
+*   **The Reckoning Meter**: A unique threat system where the world becomes progressively more dangerous the longer you survive and the further you explore.
+*   **Adaptive River Flow**: Procedural water currents that physically pull your character, adding a unique tactical layer to exploration and combat.
+*   **Juicy Retro Aesthetic**: Branded 16-color "Rivers" palette with screen shake, animated UI, and responsive scaling.
+*   **Infinite Procedural Rivers**: Explore an endless, coherent world generated using layered OpenSimplex noise (FBM).
+
+## 🎮 Core Gameplay
+
+*   **Exploration**: Discover shifting biomes (Marsh, Forest, Desert, Tundra, Grassland) each with unique flow and spawn rates.
+*   **Survival**: Manage your health and mana while navigating rising tides and lethal enemy encounters.
+*   **Reckoning**: Balance the reward of deep exploration against the rising difficulty of the Reckoning.
 
 ## 🛠️ Installation
 

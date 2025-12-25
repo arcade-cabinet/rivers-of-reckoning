@@ -387,6 +387,27 @@ class ProceduralWorld:
         self._cache[cache_key] = result
         return result
 
+    def get_water_flow(self, x: int, y: int) -> Tuple[int, int]:
+        """Get the procedural water flow direction at a position.
+
+        Args:
+            x, y: World coordinates
+
+        Returns:
+            Tuple of (dx, dy) direction
+        """
+        # Use moisture noise to determine flow direction
+        noise_val = self.moisture_noise.noise2(x * 0.05, y * 0.05)
+        
+        if noise_val < -0.5:
+            return (0, 1)   # South
+        elif noise_val < 0:
+            return (1, 0)   # East
+        elif noise_val < 0.5:
+            return (0, -1)  # North
+        else:
+            return (-1, 0)  # West
+
     def is_walkable(self, x: int, y: int) -> bool:
         """Check if a position is walkable.
 
@@ -398,7 +419,8 @@ class ProceduralWorld:
             True if the tile can be walked on
         """
         tile, _ = self.get_tile(x, y)
-        return tile not in (TileType.WATER, TileType.TREE, TileType.ROCK, TileType.STONE, TileType.CAVE_WALL)
+        # WATER is now walkable but has flow effects
+        return tile not in (TileType.TREE, TileType.ROCK, TileType.STONE, TileType.CAVE_WALL)
 
     def get_spawn_chance(self, x: int, y: int) -> float:
         """Get enemy spawn chance at a position.

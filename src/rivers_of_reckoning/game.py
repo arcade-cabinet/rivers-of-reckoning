@@ -57,6 +57,14 @@ class Game:
         self.event_timer = 0
         self.boss_data = None
 
+        # Branding: "The Reckoning" unique mechanics
+        self.reckoning_level = 0
+        self.reckoning_timer = 0
+        self.reckoning_threshold = 1000  # When it hits this, danger increases
+
+        # Title screen animation
+        self.title_frame = 0
+
         # Game statistics
         self.distance_traveled = 0
         self.enemies_defeated = 0
@@ -107,6 +115,8 @@ class Game:
         if not self.engine:
             return
 
+        self.title_frame += 1
+
         if self.engine.btnp("enter") or self.engine.btnp("space"):
             self.start_game()
             self.state = "playing"
@@ -114,42 +124,60 @@ class Game:
             self.running = False
 
     def draw_title(self):
-        """Draw procedural title screen"""
+        """Draw procedural title screen with branding flair"""
         if not self.engine:
             return
 
-        # Title
+        # Atmospheric background: procedural "river" flow
+        for i in range(10):
+            y = 80 + i * 15
+            offset = int(10 * random.random() + self.title_frame * 0.5) % 256
+            self.engine.line(0, y, 256, y, 1)  # Dark water lines
+            # Random "froth" particles
+            if self.title_frame % 5 == 0:
+                froth_x = (i * 40 + self.title_frame * 2) % 256
+                self.engine.rect(froth_x, y, 2, 1, 7)
+
+        # Main Title with "Reckoning" red highlight
+        title_x = self.WINDOW_WIDTH // 2 - 75
+        self.engine.text(title_x, 40, "RIVERS OF", self.colors["text"])
+        self.engine.text(title_x + 65, 40, "RECKONING", 8)  # Reckoning Red
+
+        # Subtitle with misty color
         self.engine.text(
-            self.WINDOW_WIDTH // 2 - 60, 40,
-            "RIVERS OF RECKONING", self.colors["text"]
+            self.WINDOW_WIDTH // 2 - 60, 60,
+            "The Waters are Rising...", 6
         )
 
-        # Subtitle
-        self.engine.text(
-            self.WINDOW_WIDTH // 2 - 55, 60,
-            "A Procedural Adventure", self.colors["ui"]
-        )
+        # Visual Divider
+        self.engine.line(40, 80, 216, 80, 7)
 
-        # Features list
+        # Features list with themed icons
         features = [
-            "* Infinite procedural world",
-            "* Dynamic biome system",
-            "* Weather & day/night cycle",
-            "* Adaptive enemy spawning",
-            "* Exploration-based gameplay",
+            "~ Infinite Procedural Rivers",
+            "~ Dynamic Biome Shifts",
+            "~ The Reckoning Meter",
+            "~ Adaptive Water Flow",
+            "~ Perma-death Challenge",
         ]
         for i, feature in enumerate(features):
-            self.engine.text(30, 100 + i * 12, feature, self.colors["highlight"])
+            col = 11 if (self.title_frame // 30) % len(features) == i else 3
+            self.engine.text(45, 100 + i * 14, feature, col)
 
-        # Instructions
+        # Instructions with pulse effect
+        pulse = 7 if (self.title_frame // 20) % 2 == 0 else 6
         self.engine.text(
-            self.WINDOW_WIDTH // 2 - 40, 190,
-            "Press ENTER to begin", self.colors["text"]
+            self.WINDOW_WIDTH // 2 - 50, 200,
+            "PRESS START [ENTER]", pulse
         )
         self.engine.text(
-            self.WINDOW_WIDTH // 2 - 35, 210,
-            "Press ESC to quit", self.colors["ui"]
+            self.WINDOW_WIDTH // 2 - 40, 220,
+            "QUIT [ESC]", self.colors["ui"]
         )
+
+        # Standalone Branding
+        self.engine.text(5, 240, "v0.5.0 Standalone", 5)
+        self.engine.text(180, 240, "Python Powered", 12)
 
     def start_game(self):
         """Initialize fully procedural game world"""
@@ -182,6 +210,11 @@ class Game:
             self.state = "paused"
             return
 
+        # Update Reckoning: slowly increases over time
+        self.reckoning_timer += 1
+        if self.reckoning_timer % 60 == 0:
+            self.reckoning_level += 1
+
         # Update ECS systems
         if self.ecs_world:
             self.ecs_world.process(1 / 60)
@@ -207,13 +240,25 @@ class Game:
                 self.event_message = None
 
     def move_player(self, dx, dy):
-        """Move player through procedural world"""
+        """Move player through procedural world with unique flow effects"""
         new_x = self.player.x + dx
         new_y = self.player.y + dy
 
         if self.map.is_walkable(new_x, new_y):
             self.player.move(dx, dy, wrap=False)
             self.distance_traveled += 1
+
+            # Unique Mechanic: River Flow
+            # If player is in water, they get pushed by the current
+            tile_type, _ = self.map.world.get_tile(self.player.x, self.player.y)
+            if tile_type == TileType.WATER:
+                fdx, fdy = self.map.world.get_water_flow(self.player.x, self.player.y)
+                if self.map.is_walkable(self.player.x + fdx, self.player.y + fdy):
+                    self.player.move(fdx, fdy, wrap=False)
+                    # No extra distance for flow movement
+                    if self.event_timer <= 0:
+                        self.event_message = "[FLOW] The current pulls you..."
+                        self.event_timer = 30  # Short message
 
             # Update camera to follow player
             self.map.update_camera(self.player.x, self.player.y)
@@ -244,6 +289,11 @@ class Game:
         event = random.choice(EVENT_TYPES)
         self.event_message = f"[{biome_config.name}] {event['desc']}"
         self.event_timer = EVENT_MESSAGE_DURATION
+        
+        # Juice: Small shake for events
+        if self.engine:
+            self.engine.shake(2, 10)
+
         if event["effect"]:
             event["effect"](self.player)
 
@@ -251,13 +301,17 @@ class Game:
         """Trigger an enemy encounter based on biome"""
         biome_config = BIOME_CONFIGS.get(self.current_biome)
 
-        # Scale enemy strength by distance traveled
-        base_strength = 1 + self.distance_traveled // 50
+        # Scale enemy strength by distance traveled and Reckoning level
+        base_strength = 1 + (self.distance_traveled // 50) + (self.reckoning_level // 100)
         strength = random.randint(base_strength, base_strength + 2)
 
         enemy = Enemy(strength=min(strength, 10))  # Cap at 10
         dmg = random.randint(1, enemy.strength)
         self.player.take_damage(dmg)
+
+        # Juice: HEAVY shake for combat
+        if self.engine:
+            self.engine.shake(6, 20)
 
         biome_name = biome_config.name if biome_config else "Unknown"
         self.event_message = f"[{biome_name}] {enemy.name} attacks! -{dmg} HP"
@@ -286,33 +340,37 @@ class Game:
             self.draw_event_message()
 
     def draw_enhanced_hud(self):
-        """Draw enhanced heads-up display with biome and world info"""
+        """Draw unique Rivers of Reckoning HUD"""
         if not self.engine:
             return
 
-        # Top HUD bar
-        self.engine.rect(0, 0, self.WINDOW_WIDTH, 20, self.colors["ui"])
+        # Top Background Panel
+        self.engine.rect(0, 0, self.WINDOW_WIDTH, 28, 1)  # Dark Water background
+        self.engine.line(0, 28, self.WINDOW_WIDTH, 28, 7)  # Froth border
 
-        # Health
-        self.engine.text(5, 5, f"HP:{self.player.health}", self.colors["text"])
+        # Health Bar - Branded
+        self.engine.text(5, 4, "HEALTH", 7)
+        self.engine.bar(45, 5, 60, 8, self.player.health, self.player.max_health, 8, 0)
 
-        # Gold
-        self.engine.text(55, 5, f"G:{self.player.gold}", self.colors["text"])
+        # RECKONING Meter - Unique Mechanic
+        self.engine.text(115, 4, "RECKONING", 14)  # Pink/Purple highlight
+        reck_progress = self.reckoning_level % 100
+        self.engine.bar(175, 5, 75, 8, reck_progress, 100, 14, 0)
 
-        # Current biome
+        # Sub-stats row
         biome_config = BIOME_CONFIGS.get(self.current_biome)
         biome_name = biome_config.name if biome_config else "???"
-        self.engine.text(100, 5, biome_name, self.colors["highlight"])
+        self.engine.text(5, 16, f"BIOME: {biome_name}", 11)
+        self.engine.text(115, 16, f"GOLD: {self.player.gold}", 10)
+        self.engine.text(180, 16, f"DIST: {self.distance_traveled}", 6)
 
-        # Distance traveled
-        self.engine.text(160, 5, f"Dist:{self.distance_traveled}", self.colors["text"])
-
-        # World coordinates at bottom
-        self.engine.rect(0, self.WINDOW_HEIGHT - 12, self.WINDOW_WIDTH, 12, 1)
+        # Bottom Info Bar
+        self.engine.rect(0, self.WINDOW_HEIGHT - 12, self.WINDOW_WIDTH, 12, 0)
+        self.engine.line(0, self.WINDOW_HEIGHT - 12, self.WINDOW_WIDTH, self.WINDOW_HEIGHT - 12, 6)
         self.engine.text(
             5, self.WINDOW_HEIGHT - 10,
-            f"World: ({self.player.x}, {self.player.y})",
-            self.colors["text"]
+            f"REGION: {self.player.x // 100}:{self.player.y // 100}  |  LVL: {self.player.level}",
+            6
         )
 
     def draw_event_message(self):

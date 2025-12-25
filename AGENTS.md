@@ -1,130 +1,90 @@
-# AGENTS.md - Rivers of Reckoning
+# AGENTS.md - Rivers of Reckoning [PYTHON STANDALONE]
 
-> **Instructions for AI agents working on this web-first procedural RPG**
+> **Instructions for AI agents working on this dedicated Python-only procedural RPG**
 
-## 🌊 Game Identity
+## 🌊 Standalone Identity
 
-**Rivers of Reckoning** is a browser-based roguelike RPG where players explore infinite procedurally generated worlds. The game is designed for **instant web play**—click a link and you're adventuring.
+**Rivers of Reckoning** is a browser-based roguelike RPG built exclusively with Python. It is a **standalone codebase** with its own branding, mechanics (River Flow, Reckoning Meter), and visual style.
 
 ### Mission Statement
 
-*Create an immersive, endlessly replayable adventure that runs perfectly in any web browser, with no downloads, no installs, and no waiting.*
-
-### Core Experience
-
-- **Exploration**: Discover biomes, secrets, and challenges in an infinite world
-- **Survival**: Manage health, avoid hazards, defeat enemies
-- **Progression**: Grow stronger, unlock abilities, achieve high scores
-- **Sharing**: Share world seeds with friends for the same adventure
+*Create a special, standout Python experience that leverages the unique strengths of pygame-ce and procedural generation.*
 
 ## 🎯 Design Principles
 
 | Principle | What It Means |
 |-----------|---------------|
-| **Web-First** | Browser is the primary platform. No desktop-only features. |
-| **Instant Play** | Game loads fast and starts immediately. No setup required. |
-| **Responsive** | Scales perfectly from phone to 4K monitor. |
-| **Procedural** | Everything generated from seeds. Infinite variety. |
-| **Juicy** | Satisfying feedback for every action. |
-| **Accessible** | Simple to learn, clear UI, inclusive design. |
+| **Python-Only** | Solely use Python dependencies. No TS/JS integration. |
+| **River Flow** | Procedural water current mechanics are core to movement. |
+| **The Reckoning** | A rising threat meter that scales world difficulty. |
+| **Juicy Retro** | SATISFYING feedback: screen shake, animated UI, branded palette. |
+| **Web-First** | Optimzed for `pygbag` WASM deployment. |
 
 ## 🛠 Technology
 
 | Layer | Tech | Why |
 |-------|------|-----|
-| Engine | pygame-ce | Modern pygame fork, great for 2D |
-| Web | pygbag | Compiles Python to WebAssembly |
-| World Gen | opensimplex | Coherent noise for natural terrain |
-| Architecture | esper | Clean ECS pattern |
+| Engine | pygame-ce | Modern pygame fork, high performance 2D |
+| Web | pygbag | Best-in-class Python-to-WASM compilation |
+| Noise | opensimplex | Consistent noise for infinite procedural worlds |
+| ECS | esper | Clean data/logic separation for RPGs |
 
 ## 📁 Structure
 
 ```
 main.py                      # Single async entry point
 src/rivers_of_reckoning/
-├── engine.py                # Responsive auto-scaling engine
-├── game.py                  # Game loop and state machine
-├── world_gen.py             # Procedural generation
+├── engine.py                # "Juicy" engine with shake and scaling
+├── game.py                  # Main loop with Reckoning meter logic
+├── world_gen.py             # Procedural world with Flow fields
 ├── systems.py               # ECS components/processors
 ├── map.py                   # Infinite camera-based map
-├── player.py                # Player entity
+├── player.py                # Player stats and leveling
 ├── enemy.py                 # Enemy AI
-└── map_data.py              # Game data/constants
+└── map_data.py              # Themed constants and palette
 ```
 
 ## 🔧 Commands
 
 ```bash
-python main.py          # Run the game
-pytest -v               # Run tests
-flake8 src/             # Lint code
-python -m pygbag .      # Build for web
-uv lock && uv sync      # Update dependencies
+python main.py          # Play test
+pytest -v               # Run test suite
+flake8 src/             # Lint check
+python -m pygbag --build . # Build for web
 ```
 
 ## ✅ Agent Checklist
 
 Before making changes:
-- [ ] Understand the web-first constraint
-- [ ] Read recent commits for patterns
-- [ ] Run tests to confirm clean state
+- [ ] Verify you are adding Python code ONLY
+- [ ] Understand the "Reckoning" and "Flow" unique mechanics
+- [ ] Ensure any new UI has "juice" (shake, pulse, or animation)
 
 When making changes:
-- [ ] Keep code async-compatible (no blocking)
-- [ ] Test that `python main.py` runs
-- [ ] Ensure all tests pass
-- [ ] Follow conventional commits
-
-After changes:
-- [ ] Lint passes
-- [ ] Tests pass
-- [ ] Documentation updated if needed
+- [ ] Keep the 16-color branded palette intact
+- [ ] Ensure all loops are `async/await` compatible
+- [ ] Follow conventional commit standards
 
 ## ❌ What NOT to Do
 
-- **Don't** add desktop-only features (file dialogs, subprocess, etc.)
-- **Don't** use synchronous/blocking patterns
-- **Don't** create multiple entry points (there is ONE `main.py`)
-- **Don't** hardcode content (everything should be procedural)
-- **Don't** break the responsive scaling
+- **Don't** add any `npm`, `pnpm`, or Node.js dependencies
+- **Don't** use synchronous/blocking `time.sleep()` calls
+- **Don't** break the responsive `pygame.SCALED` system
+- **Don't** use generic retro styles; use the unique "Rivers" branding
 
 ## 🎨 Visual Style
 
+- **Palette**: Branded 16-color "Rivers of Reckoning" palette
 - **Resolution**: 256x256 logical, auto-scaled
-- **Palette**: 16 retro colors
-- **Style**: Clear pixel art, readable at any size
-- **Feedback**: Visual confirmation for all actions
+- **Vibe**: Atmospheric, moody, marshland-focused
+- **Juice**: Visual confirmation for all actions via screen shake or color pulse
 
 ## 📝 Commit Format
 
 ```
-feat(world): add desert biome generation
-fix(combat): correct damage calculation
-docs: update README with new controls
-test: add procedural map variety tests
-chore: update dependencies
+feat(reckoning): increase threat based on river distance
+fix(flow): correct water current direction logic
+docs: update standalone branding guide
+test: add test for procedural flow generation
+chore: update pygame-ce dependency
 ```
-
-## 🔗 Key Files
-
-| File | Purpose |
-|------|---------|
-| `main.py` | The only entry point |
-| `engine.py` | Pygame wrapper with scaling |
-| `world_gen.py` | Procedural world generation |
-| `game.py` | Main game class |
-
-## Agent-Specific Notes
-
-### Claude
-- Focus on architecture and complex refactoring
-- Can make cross-file changes
-- Check CLAUDE.md for detailed guidance
-
-### Copilot
-- Good for targeted fixes and feature additions
-- Check .github/copilot-instructions.md
-
-### Cursor
-- IDE-integrated development
-- Check .cursor/rules/*.mdc for context

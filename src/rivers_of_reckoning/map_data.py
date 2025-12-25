@@ -49,65 +49,45 @@ DIRECTIONS = {
 
 # Tile color palette (indices map to Engine color palette)
 TILE_COLORS = {
-    ".": 4,   # dirt (brown)
-    "~": 10,  # sand (yellow)
-    "#": 5,   # stone (dark gray)
-    "^": 3,   # grass (green)
-    "o": 12,  # water (blue)
-    "T": 11,  # tree (light green)
-    "R": 6,   # rock (light gray)
+    ".": 4,   # Mud Brown (dirt)
+    "~": 15,  # Sand
+    "#": 5,   # Wet Stone
+    "^": 3,   # Moss Green
+    "o": 12,  # River Blue
+    "T": 11,  # Poison Ivy (tree)
+    "R": 5,   # Wet Stone (rock)
 }
 
 
 # Sprite drawing functions using Engine
 def draw_player_sprite(engine, x, y, size=8, color=8):
-    """Draw player sprite using Engine primitives.
-
-    Args:
-        engine: The Engine instance for drawing
-        x: X position
-        y: Y position
-        size: Sprite size in pixels
-        color: Base color index
-    """
+    """Draw unique player sprite."""
     if engine is None:
         return
-    # Main body
-    engine.rect(x, y, size, size, color)
+    # Hooded figure aesthetic
+    engine.rect(x + 1, y + 1, size - 2, size - 1, color)  # Body
+    engine.rect(x + 2, y + 1, size - 4, 3, 0)            # Hood shadow
+    engine.rect(x + 3, y + 2, 2, 1, 10)                  # Glowing eyes (Sulfur)
 
 
 def draw_enemy_sprite(engine, x, y, size=8, color=8):
-    """Draw enemy sprite using Engine primitives.
-
-    Args:
-        engine: The Engine instance for drawing
-        x: X position
-        y: Y position
-        size: Sprite size in pixels
-        color: Base color index
-    """
+    """Draw unique enemy sprite."""
     if engine is None:
         return
-    # Enemy body (simple rectangle)
-    engine.rect(x, y, size, size, color)
+    # Jagged form
+    engine.circ(x + size // 2, y + size // 2, size // 2 - 1, color)
+    engine.rect(x + 2, y + 2, 2, 2, 0)  # Eye holes
 
 
 def draw_tree_sprite(engine, x, y, size=8, color=11):
-    """Draw tree sprite using Engine primitives.
-
-    Args:
-        engine: The Engine instance for drawing
-        x: X position
-        y: Y position
-        size: Sprite size in pixels
-        color: Base color index
-    """
+    """Draw atmospheric tree."""
     if engine is None:
         return
-    # Trunk
-    engine.rect(x + size // 3, y + size // 2, size // 3, size // 2, 4)
-    # Foliage
-    engine.rect(x + 1, y + 1, size - 2, size // 2, color)
+    # Twisted trunk
+    engine.line(x + size // 2, y + size, x + size // 2, y + size // 2, 4)
+    # Mossy foliage
+    engine.circ(x + size // 2, y + size // 3, size // 2, color)
+    engine.circ(x + size // 2, y + size // 3, 1, 3)  # Inner leaf detail
 
 
 def draw_rock_sprite(engine, x, y, size=8, color=13):
