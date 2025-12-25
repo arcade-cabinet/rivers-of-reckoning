@@ -15,7 +15,7 @@ Engine Abstraction Layer
 ------------------------
 
 All interaction with the underlying game engine (Pygame-ce) is handled through 
-the ``Engine`` class in ``src/first_python_rpg/engine.py``. 
+the ``Engine`` class in ``src/rivers_of_reckoning/engine.py``. 
 
 - **Responsive Scaling**: Uses ``pygame.SCALED`` to handle different screen sizes.
 - **Async Loop**: Implements an ``asyncio``-based game loop for Pygbag 
@@ -29,8 +29,8 @@ Entity Component System (ECS)
 We use the **esper** library to implement an ECS pattern. This allows us to 
 separate data (Components) from logic (Systems).
 
-- **Components**: Simple data classes located in ``src/first_python_rpg/types.py``.
-- **Systems**: Logic processors found in ``src/first_python_rpg/systems.py``.
+- **Components**: Simple data classes located in ``src/rivers_of_reckoning/types.py``.
+- **Systems**: Logic processors found in ``src/rivers_of_reckoning/systems.py``.
 - **World**: The ``ecs_world`` orchestrates the processing of all systems.
 
 Procedural Generation
@@ -81,7 +81,7 @@ Project Structure
    /
    ├── main.py                 # Entry point
    ├── src/
-   │   └── first_python_rpg/
+   │   └── rivers_of_reckoning/
    │       ├── engine.py       # Engine abstraction
    │       ├── game.py         # Main game orchestration
    │       ├── map.py          # Procedural map logic

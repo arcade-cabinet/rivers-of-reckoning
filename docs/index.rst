@@ -1,8 +1,8 @@
 ==============================
-First Python RPG - Game Manual
+Rivers of Reckoning - Game Manual
 ==============================
 
-Welcome to **First Python RPG**, a retro-style role-playing game built with Python and Pygame-ce!
+Welcome to **Rivers of Reckoning**, a procedural roguelike RPG built with Python and Pygame-ce!
 
 This manual will guide you through everything you need to know to play the game,
 from basic controls to advanced features.

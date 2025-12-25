@@ -4,9 +4,9 @@ User Manual
 Introduction
 ============
 
-First Python RPG is a retro-style role-playing game featuring procedural generation,
-dynamic weather systems, and an engaging quest system. Explore dungeons, battle enemies,
-and become a legendary hero!
+Rivers of Reckoning is a procedural roguelike RPG featuring infinite world generation,
+dynamic 2.5D rendering, and an engaging progression system. Explore procedurally generated
+worlds, battle enemies, and forge your legend!
 
 Getting Started
 ===============
@@ -14,7 +14,7 @@ Getting Started
 Launching the Game
 ------------------
 
-Launch the game using ``python main.py`` or ``first-python-rpg`` if installed via pip.
+Launch the game using ``python main.py`` or ``rivers-of-reckoning`` if installed via pip.
 
 Controls
 ========
@@ -100,7 +100,7 @@ Tips and Strategies
 Credits
 =======
 
-First Python RPG was created as a demonstration of Python game development
-using the Pygame-ce game engine.
+Rivers of Reckoning was created as a demonstration of Python game development
+using the Pygame-ce game engine and ECS architecture.
 
 Enjoy your adventure!

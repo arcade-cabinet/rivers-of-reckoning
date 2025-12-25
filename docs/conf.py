@@ -1,10 +1,10 @@
 # Configuration file for the Sphinx documentation builder.
 # This builds the GAME MANUAL for players, not API documentation.
 
-project = 'First Python RPG - Game Manual'
-copyright = '2025, First Python RPG Team'
-author = 'First Python RPG Team'
-release = '0.3.0'
+project = 'Rivers of Reckoning - Game Manual'
+copyright = '2025, Rivers of Reckoning Team'
+author = 'Rivers of Reckoning Team'
+release = '0.5.0'
 
 # No autodoc needed - this is a game manual, not library documentation
 extensions = [

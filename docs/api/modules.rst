@@ -1,7 +1,7 @@
-Rivers of Reckoning
+rivers-of-reckoning
 ===================
 
 .. toctree::
    :maxdepth: 4
 
-   first_python_rpg
+   rivers_of_reckoning
