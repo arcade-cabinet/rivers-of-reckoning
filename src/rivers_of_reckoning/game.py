@@ -246,12 +246,25 @@ class Game:
                 self.event_message = None
 
     def move_player(self, dx, dy):
-        """Move player through procedural world with unique flow effects"""
-        new_x = self.player.x + dx
-        new_y = self.player.y + dy
+        """Move player through procedural world with unique flow effects.
+        
+        CRITICAL FIX: Apply confusion BEFORE walkability check to prevent
+        confused players from walking through walls.
+        """
+        # Apply confusion randomization BEFORE checking walkability
+        actual_dx, actual_dy = dx, dy
+        if self.player.confused > 0 and random.random() < 0.5:
+            actual_dx, actual_dy = random.choice([(0, 1), (0, -1), (1, 0), (-1, 0)])
+        
+        new_x = self.player.x + actual_dx
+        new_y = self.player.y + actual_dy
 
         if self.map.is_walkable(new_x, new_y):
-            self.player.move(dx, dy, wrap=False)
+            # Move directly to avoid double confusion application
+            self.player.x = new_x
+            self.player.y = new_y
+            if self.player.confused > 0:
+                self.player.confused -= 1
             self.distance_traveled += 1
 
             # Unique Mechanic: The Flow of Fate
