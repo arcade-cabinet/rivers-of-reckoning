@@ -33,10 +33,11 @@ export function Player({ heightFunction }: PlayerProps) {
       keysRef.current.delete(e.key.toLowerCase())
     }
 
-    const handleJoystick = (e: any) => {
-      if (e.detail) {
-        joystickRef.current.x = e.detail.x || 0
-        joystickRef.current.y = e.detail.y || 0
+    const handleJoystick = (e: Event) => {
+      const detail = (e as CustomEvent).detail
+      if (detail) {
+        joystickRef.current.x = detail.x || 0
+        joystickRef.current.y = detail.y || 0
       }
     }
 
