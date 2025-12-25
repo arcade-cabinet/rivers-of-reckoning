@@ -18,6 +18,7 @@ from enum import Enum, auto
 # COMPONENTS (pure data)
 # =============================================================================
 
+
 class TimePhase(Enum):
     DAWN = auto()
     DAY = auto()
@@ -36,6 +37,7 @@ class WeatherType(Enum):
 @dataclass
 class Position:
     """2D position in the world."""
+
     x: float = 0.0
     y: float = 0.0
 
@@ -43,6 +45,7 @@ class Position:
 @dataclass
 class Velocity:
     """Movement velocity."""
+
     dx: float = 0.0
     dy: float = 0.0
     max_speed: float = 1.0
@@ -51,6 +54,7 @@ class Velocity:
 @dataclass
 class Health:
     """Health for damageable entities."""
+
     current: int = 10
     maximum: int = 10
     regen_rate: float = 0.0  # HP per second
@@ -59,6 +63,7 @@ class Health:
 @dataclass
 class Stamina:
     """Stamina for actions."""
+
     current: float = 100.0
     maximum: float = 100.0
     regen_rate: float = 5.0  # Per second
@@ -67,8 +72,9 @@ class Stamina:
 @dataclass
 class Combat:
     """Combat statistics."""
+
     attack_damage: int = 2
-    armor: float = 0.0      # Damage reduction (0-1)
+    armor: float = 0.0  # Damage reduction (0-1)
     dodge_chance: float = 0.1
     attack_cooldown: float = 0.0
     is_attacking: bool = False
@@ -77,6 +83,7 @@ class Combat:
 @dataclass
 class PlayerTag:
     """Identifies the player entity."""
+
     gold: int = 0
     score: int = 0
     level: int = 1
@@ -89,6 +96,7 @@ class PlayerTag:
 @dataclass
 class EnemyTag:
     """Identifies enemy entities with AI state."""
+
     name: str = "Goblin"
     state: str = "idle"  # idle, wandering, chasing, attacking, fleeing
     detection_range: float = 5.0
@@ -100,8 +108,9 @@ class EnemyTag:
 @dataclass
 class Renderable:
     """Visual rendering data."""
+
     color: int = 8  # Color palette index
-    size: int = 1   # Tile size multiplier
+    size: int = 1  # Tile size multiplier
     visible: bool = True
     sprite_id: str = "default"
 
@@ -109,7 +118,8 @@ class Renderable:
 @dataclass
 class TimeOfDay:
     """Global time system (singleton component)."""
-    hour: float = 6.0       # 0-24
+
+    hour: float = 6.0  # 0-24
     phase: TimePhase = TimePhase.DAWN
     time_scale: float = 60.0  # Game seconds per real second
     day_count: int = 1
@@ -118,8 +128,9 @@ class TimeOfDay:
 @dataclass
 class Weather:
     """Global weather system (singleton component)."""
+
     current: WeatherType = WeatherType.CLEAR
-    intensity: float = 0.5   # 0-1
+    intensity: float = 0.5  # 0-1
     duration: float = 300.0  # Seconds remaining
     wind_speed: float = 0.0
     wind_angle: float = 0.0  # Radians
@@ -128,6 +139,7 @@ class Weather:
 @dataclass
 class WorldState:
     """Global world state (singleton component)."""
+
     current_biome: str = "marsh"
     difficulty: float = 1.0
     enemies_defeated: int = 0
@@ -138,6 +150,7 @@ class WorldState:
 # =============================================================================
 # SYSTEMS (using esper 3.x module-level API)
 # =============================================================================
+
 
 class MovementProcessor(esper.Processor):
     """Handles entity movement based on velocity."""
@@ -256,10 +269,7 @@ class AIProcessor(esper.Processor):
             return
 
         for ent, (pos, vel, enemy) in esper.get_components(Position, Velocity, EnemyTag):
-            dist_to_player = math.sqrt(
-                (pos.x - player_pos.x) ** 2 +
-                (pos.y - player_pos.y) ** 2
-            )
+            dist_to_player = math.sqrt((pos.x - player_pos.x) ** 2 + (pos.y - player_pos.y) ** 2)
 
             if enemy.state == "idle":
                 if dist_to_player < enemy.detection_range:
@@ -310,10 +320,7 @@ class HealthRegenProcessor(esper.Processor):
         """Update health regeneration."""
         for ent, (health,) in esper.get_components(Health):
             if health.regen_rate > 0 and health.current < health.maximum:
-                health.current = min(
-                    health.maximum,
-                    health.current + health.regen_rate * dt
-                )
+                health.current = min(health.maximum, health.current + health.regen_rate * dt)
 
 
 class StaminaRegenProcessor(esper.Processor):
@@ -323,10 +330,7 @@ class StaminaRegenProcessor(esper.Processor):
         """Update stamina regeneration."""
         for ent, (stamina,) in esper.get_components(Stamina):
             if stamina.current < stamina.maximum:
-                stamina.current = min(
-                    stamina.maximum,
-                    stamina.current + stamina.regen_rate * dt
-                )
+                stamina.current = min(stamina.maximum, stamina.current + stamina.regen_rate * dt)
 
 
 class GameWorld:
@@ -393,12 +397,7 @@ def create_player(x: float = 5.0, y: float = 5.0) -> int:
     )
 
 
-def create_enemy(
-    x: float,
-    y: float,
-    name: str = "Goblin",
-    is_boss: bool = False
-) -> int:
+def create_enemy(x: float, y: float, name: str = "Goblin", is_boss: bool = False) -> int:
     """Create an enemy entity.
 
     Args:
@@ -424,9 +423,5 @@ def create_enemy(
             detection_range=8.0 if is_boss else 5.0,
             attack_range=2.0 if is_boss else 1.5,
         ),
-        Renderable(
-            color=8 if is_boss else 9,
-            size=2 if is_boss else 1,
-            sprite_id="boss" if is_boss else "enemy"
-        ),
+        Renderable(color=8 if is_boss else 9, size=2 if is_boss else 1, sprite_id="boss" if is_boss else "enemy"),
     )

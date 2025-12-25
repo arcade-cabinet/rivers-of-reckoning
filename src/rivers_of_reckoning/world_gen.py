@@ -18,16 +18,18 @@ CAVE_NOISE = OpenSimplex(seed=789)
 
 class BiomeType(Enum):
     """Biome types determined by temperature and moisture."""
-    MARSH = auto()      # High moisture, moderate temp
-    FOREST = auto()     # Moderate moisture, moderate temp
-    DESERT = auto()     # Low moisture, high temp
-    TUNDRA = auto()     # Any moisture, low temp
-    CAVES = auto()      # Underground (special)
+
+    MARSH = auto()  # High moisture, moderate temp
+    FOREST = auto()  # Moderate moisture, moderate temp
+    DESERT = auto()  # Low moisture, high temp
+    TUNDRA = auto()  # Any moisture, low temp
+    CAVES = auto()  # Underground (special)
     GRASSLAND = auto()  # Low moisture, moderate temp
 
 
 class TileType(Enum):
     """Tile types for the map."""
+
     DIRT = "."
     GRASS = "^"
     SAND = "~"
@@ -42,84 +44,85 @@ class TileType(Enum):
 @dataclass
 class BiomeConfig:
     """Configuration for a biome's characteristics."""
+
     name: str
     base_color: int
     accent_color: int
-    tree_density: float      # 0-1 chance of tree per valid tile
-    rock_density: float      # 0-1 chance of rock per valid tile
-    water_density: float     # 0-1 chance of water per valid tile
+    tree_density: float  # 0-1 chance of tree per valid tile
+    rock_density: float  # 0-1 chance of rock per valid tile
+    water_density: float  # 0-1 chance of water per valid tile
     enemy_spawn_rate: float  # 0-1 base spawn rate
     stamina_modifier: float  # Multiplier for stamina drain
-    visibility: float        # 0-1 how far player can see
+    visibility: float  # 0-1 how far player can see
 
 
 # Biome configurations inspired by the theme of Hostile Escalation
 BIOME_CONFIGS = {
     BiomeType.MARSH: BiomeConfig(
         name="The Forsaken Path",
-        base_color=4,    # Mud Brown
+        base_color=4,  # Mud Brown
         accent_color=11,  # Poison Ivy
         tree_density=0.1,
         rock_density=0.05,
         water_density=0.3,
         enemy_spawn_rate=0.3,
         stamina_modifier=1.1,
-        visibility=0.7
+        visibility=0.7,
     ),
     BiomeType.FOREST: BiomeConfig(
         name="The Iron Woods",
-        base_color=3,    # Moss Green
+        base_color=3,  # Moss Green
         accent_color=11,  # Poison Ivy
         tree_density=0.35,
         rock_density=0.1,
         water_density=0.05,
         enemy_spawn_rate=0.4,
         stamina_modifier=1.0,
-        visibility=0.5
+        visibility=0.5,
     ),
     BiomeType.DESERT: BiomeConfig(
         name="Blistering Wastes",
-        base_color=15,   # Sand
-        accent_color=9,   # Embers
+        base_color=15,  # Sand
+        accent_color=9,  # Embers
         tree_density=0.02,
         rock_density=0.15,
         water_density=0.01,
         enemy_spawn_rate=0.2,
         stamina_modifier=1.5,
-        visibility=1.0
+        visibility=1.0,
     ),
     BiomeType.TUNDRA: BiomeConfig(
         name="The Frozen Veil",
-        base_color=7,    # Froth White
+        base_color=7,  # Froth White
         accent_color=12,  # River Blue
         tree_density=0.05,
         rock_density=0.2,
         water_density=0.1,
         enemy_spawn_rate=0.25,
         stamina_modifier=1.3,
-        visibility=0.8
+        visibility=0.8,
     ),
     BiomeType.GRASSLAND: BiomeConfig(
         name="Whispering Plains",
-        base_color=3,    # Moss Green
+        base_color=3,  # Moss Green
         accent_color=10,  # Sulfur
         tree_density=0.08,
         rock_density=0.05,
         water_density=0.02,
         enemy_spawn_rate=0.35,
         stamina_modifier=0.9,
-        visibility=0.9
+        visibility=0.9,
     ),
     BiomeType.CAVES: BiomeConfig(
         name="The Depths",
-        base_color=0,    # Deep Void
+        base_color=0,  # Deep Void
         accent_color=13,  # Twilight
         tree_density=0.0,
         rock_density=0.25,
         water_density=0.1,
         enemy_spawn_rate=0.5,
         stamina_modifier=1.0,
-        visibility=0.3
+        visibility=0.3,
     ),
 }
 
@@ -268,7 +271,7 @@ def generate_tile(x: int, y: int, biome: BiomeType, terrain_value: float) -> Til
 
     # Use deterministic randomness based on position
     rand_seed = (x * 73856093) ^ (y * 19349663)
-    rand_val = ((rand_seed % 1000) / 1000.0)
+    rand_val = (rand_seed % 1000) / 1000.0
 
     # Water at low terrain values
     if terrain_value < -0.3:
@@ -398,11 +401,11 @@ class ProceduralWorld:
         """
         # Use moisture noise to determine flow direction
         noise_val = self.moisture_noise.noise2(x * 0.05, y * 0.05)
-        
+
         if noise_val < -0.5:
-            return (0, 1)   # South
+            return (0, 1)  # South
         elif noise_val < 0:
-            return (1, 0)   # East
+            return (1, 0)  # East
         elif noise_val < 0.5:
             return (0, -1)  # North
         else:
@@ -451,13 +454,13 @@ class ProceduralWorld:
 
         # Tile-specific colors
         color_map = {
-            TileType.WATER: 12,    # Blue
-            TileType.TREE: 11,     # Light green
-            TileType.ROCK: 13,     # Gray
-            TileType.STONE: 5,     # Dark gray
-            TileType.SAND: 10,     # Yellow
+            TileType.WATER: 12,  # Blue
+            TileType.TREE: 11,  # Light green
+            TileType.ROCK: 13,  # Gray
+            TileType.STONE: 5,  # Dark gray
+            TileType.SAND: 10,  # Yellow
             TileType.GRASS: config.base_color,
-            TileType.DIRT: 4,      # Brown
+            TileType.DIRT: 4,  # Brown
         }
 
         return color_map.get(tile, config.base_color)

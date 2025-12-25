@@ -14,20 +14,20 @@ LOGICAL_HEIGHT = 960
 
 # 16-color retro palette - Rivers of Reckoning Branded
 PALETTE = {
-    0: (12, 12, 20),      # Deep Void (Black)
-    1: (20, 35, 52),      # Dark Water (Dark Blue)
-    2: (82, 37, 70),      # Blood Marsh (Dark Purple)
-    3: (15, 85, 60),      # Moss Green (Dark Green)
-    4: (125, 70, 50),     # Mud Brown (Brown)
-    5: (70, 80, 85),      # Wet Stone (Dark Gray)
-    6: (140, 160, 175),   # Misty Air (Light Gray)
-    7: (230, 245, 235),   # Froth White (White)
-    8: (215, 40, 65),     # Reckoning Red (Red)
-    9: (240, 130, 40),    # Embers (Orange)
-    10: (220, 210, 60),   # Sulfur (Yellow)
-    11: (60, 190, 110),   # Poison Ivy (Green)
-    12: (50, 150, 210),   # River Blue (Blue)
-    13: (90, 90, 140),    # Twilight (Indigo)
+    0: (12, 12, 20),  # Deep Void (Black)
+    1: (20, 35, 52),  # Dark Water (Dark Blue)
+    2: (82, 37, 70),  # Blood Marsh (Dark Purple)
+    3: (15, 85, 60),  # Moss Green (Dark Green)
+    4: (125, 70, 50),  # Mud Brown (Brown)
+    5: (70, 80, 85),  # Wet Stone (Dark Gray)
+    6: (140, 160, 175),  # Misty Air (Light Gray)
+    7: (230, 245, 235),  # Froth White (White)
+    8: (215, 40, 65),  # Reckoning Red (Red)
+    9: (240, 130, 40),  # Embers (Orange)
+    10: (220, 210, 60),  # Sulfur (Yellow)
+    11: (60, 190, 110),  # Poison Ivy (Green)
+    12: (50, 150, 210),  # River Blue (Blue)
+    13: (90, 90, 140),  # Twilight (Indigo)
     14: (210, 100, 160),  # Lotus Pink (Pink)
     15: (240, 190, 150),  # Sand (Peach)
 }
@@ -50,10 +50,7 @@ class Engine:
 
         # Use SCALED for automatic scaling + RESIZABLE for window flexibility
         # This automatically handles high-DPI displays and browser resizing
-        self.screen = pygame.display.set_mode(
-            (LOGICAL_WIDTH, LOGICAL_HEIGHT),
-            pygame.SCALED | pygame.RESIZABLE
-        )
+        self.screen = pygame.display.set_mode((LOGICAL_WIDTH, LOGICAL_HEIGHT), pygame.SCALED | pygame.RESIZABLE)
         pygame.display.set_caption(title)
 
         self.clock = pygame.time.Clock()
@@ -90,6 +87,7 @@ class Engine:
             draw: Draw callback function
         """
         import random
+
         while self.running:
             # Handle events
             self._keys_just_pressed.clear()

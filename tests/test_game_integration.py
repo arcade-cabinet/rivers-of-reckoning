@@ -120,7 +120,7 @@ def test_procedural_game_simulation():
 def test_game_headless_mode_player_movement_and_events():
     """Test player movement and events in headless mode."""
     from rivers_of_reckoning.game import Game
-    
+
     g = Game(test_mode=True)
     g.start_game()
     g.state = "playing"
@@ -147,12 +147,8 @@ def test_game_headless_mode_player_movement_and_events():
         # Player should be healthy
         assert g.player.health > 0
         # Something should have changed (position or events affected stats)
-        has_moved = (g.distance_traveled > 0 or
-                     g.player.x != start_x or
-                     g.player.y != start_y)
-        has_events = (g.player.health != start_health or
-                      g.player.gold > 0 or
-                      g.enemies_defeated > 0)
+        has_moved = g.distance_traveled > 0 or g.player.x != start_x or g.player.y != start_y
+        has_events = g.player.health != start_health or g.player.gold > 0 or g.enemies_defeated > 0
         # Ensure that either movement or an event affected the player/game state
         assert has_moved or has_events, "Either position or stats should have changed"
         # At minimum we can verify the game state is consistent

@@ -49,13 +49,13 @@ DIRECTIONS = {
 
 # Tile color palette (indices map to Engine color palette)
 TILE_COLORS = {
-    ".": 4,   # Mud Brown (dirt)
+    ".": 4,  # Mud Brown (dirt)
     "~": 15,  # Sand
-    "#": 5,   # Wet Stone
-    "^": 3,   # Moss Green
+    "#": 5,  # Wet Stone
+    "^": 3,  # Moss Green
     "o": 12,  # River Blue
     "T": 11,  # Poison Ivy (tree)
-    "R": 5,   # Wet Stone (rock)
+    "R": 5,  # Wet Stone (rock)
 }
 
 
@@ -66,8 +66,8 @@ def draw_player_sprite(engine, x, y, size=8, color=8):
         return
     # Hooded figure aesthetic
     engine.rect(x + 1, y + 1, size - 2, size - 1, color)  # Body
-    engine.rect(x + 2, y + 1, size - 4, 3, 0)            # Hood shadow
-    engine.rect(x + 3, y + 2, 2, 1, 10)                  # Glowing eyes (Sulfur)
+    engine.rect(x + 2, y + 1, size - 4, 3, 0)  # Hood shadow
+    engine.rect(x + 3, y + 2, 2, 1, 10)  # Glowing eyes (Sulfur)
 
 
 def draw_enemy_sprite(engine, x, y, size=8, color=8):

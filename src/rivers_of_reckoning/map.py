@@ -124,7 +124,7 @@ class Map:
 
         # Map tile size adjusted for 960x960
         draw_tile_size = engine.width // self.size
-        
+
         for local_y in range(self.size):
             for local_x in range(self.size):
                 world_x = self.camera_x + local_x

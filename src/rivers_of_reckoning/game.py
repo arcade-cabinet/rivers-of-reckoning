@@ -78,14 +78,14 @@ class Game:
 
         # Colors (16-color palette)
         self.colors = {
-            "bg": 0,        # Black
-            "text": 7,      # White
-            "player": 8,    # Red
-            "enemy": 10,    # Yellow/Green
-            "ui": 6,        # Light Blue
+            "bg": 0,  # Black
+            "text": 7,  # White
+            "player": 8,  # Red
+            "enemy": 10,  # Yellow/Green
+            "ui": 6,  # Light Blue
             "highlight": 11,  # Light Green
-            "warning": 8,   # Red
-            "success": 3,   # Dark Green
+            "warning": 8,  # Red
+            "success": 3,  # Dark Green
         }
 
     def update(self):
@@ -137,7 +137,6 @@ class Game:
         # Atmospheric background: procedural "river" flow
         for i in range(10):
             y = 80 + i * 15
-            offset = int(10 * random.random() + self.title_frame * 0.5) % 256
             self.engine.line(0, y, 256, y, 1)  # Dark water lines
             # Random "froth" particles
             if self.title_frame % 5 == 0:
@@ -150,10 +149,7 @@ class Game:
         self.engine.text(title_x + 65, 40, "RECKONING", 8)  # Reckoning Red
 
         # Subtitle with misty color
-        self.engine.text(
-            self.WINDOW_WIDTH // 2 - 60, 60,
-            "The Saga of Rivers Begins...", 6
-        )
+        self.engine.text(self.WINDOW_WIDTH // 2 - 60, 60, "The Saga of Rivers Begins...", 6)
 
         # Visual Divider
         self.engine.line(40, 80, 216, 80, 7)
@@ -172,14 +168,8 @@ class Game:
 
         # Instructions with pulse effect
         pulse = 7 if (self.title_frame // 20) % 2 == 0 else 6
-        self.engine.text(
-            self.WINDOW_WIDTH // 2 - 50, 200,
-            "PRESS START [ENTER]", pulse
-        )
-        self.engine.text(
-            self.WINDOW_WIDTH // 2 - 40, 220,
-            "QUIT [ESC]", self.colors["ui"]
-        )
+        self.engine.text(self.WINDOW_WIDTH // 2 - 50, 200, "PRESS START [ENTER]", pulse)
+        self.engine.text(self.WINDOW_WIDTH // 2 - 40, 220, "QUIT [ESC]", self.colors["ui"])
 
         # Standalone Branding
         self.engine.text(5, 240, "Genesis: Curses 1.0", 5)
@@ -195,6 +185,7 @@ class Game:
 
         # Create procedural map with random seed
         from .map import Map
+
         seed = random.randint(1, 999999)
         self.map = Map(seed=seed)
 
@@ -225,7 +216,7 @@ class Game:
         self.reckoning_timer += 1
         if self.reckoning_timer % 60 == 0:
             self.reckoning_level += 1
-            
+
             # Check for Reckoning Surge (every 100 levels)
             if self.reckoning_level > 0 and self.reckoning_level % 100 == 0:
                 self._trigger_reckoning_surge()
@@ -298,7 +289,7 @@ class Game:
         """A major event where the world actively strikes back"""
         if self.engine:
             self.engine.shake(10, 60)  # Violent shake
-        
+
         surge_types = [
             "FATE AWAKENS!",
             "THE WORLD RECKONS!",
@@ -308,7 +299,7 @@ class Game:
         msg = random.choice(surge_types)
         self.event_message = f"!!! {msg} !!!"
         self.event_timer = EVENT_MESSAGE_DURATION * 2
-        
+
         # Immediate consequence
         penalty = 5 + (self.reckoning_level // 200)
         self.player.take_damage(penalty)
@@ -324,7 +315,7 @@ class Game:
         event = random.choice(EVENT_TYPES)
         self.event_message = f"[{biome_config.name}] {event['desc']}"
         self.event_timer = EVENT_MESSAGE_DURATION
-        
+
         # Juice: Small shake for events
         if self.engine:
             self.engine.shake(2, 10)
@@ -365,17 +356,17 @@ class Game:
         # Scale player drawing to 960x960 context
         tile_px_size = self.WINDOW_WIDTH // MAP_SIZE
         center_x = (MAP_SIZE // 2) * tile_px_size
-        center_y = (MAP_SIZE // 2) * tile_px_size + 40 # Offset for HUD
-        
+        center_y = (MAP_SIZE // 2) * tile_px_size + 40  # Offset for HUD
+
         # 2.5D Player Shadow
         self.engine.circ(center_x + tile_px_size // 2, center_y + tile_px_size - 10, tile_px_size // 3, 0)
-        
+
         # Get correct animation based on state
-        state = 'idle'
-        if self.engine.btn('up') or self.engine.btn('down') or self.engine.btn('left') or self.engine.btn('right'):
-            state = 'run'
-        
-        player_surf = self.assets.get_anim('character', state, self.anim_frame)
+        state = "idle"
+        if self.engine.btn("up") or self.engine.btn("down") or self.engine.btn("left") or self.engine.btn("right"):
+            state = "run"
+
+        player_surf = self.assets.get_anim("character", state, self.anim_frame)
         if player_surf:
             self.engine.blit(player_surf, (center_x, center_y))
         else:
@@ -410,10 +401,10 @@ class Game:
         # Bottom Info Bar
         self.engine.rect(0, self.WINDOW_HEIGHT - 40, self.WINDOW_WIDTH, 40, 0)
         self.engine.line(0, self.WINDOW_HEIGHT - 40, self.WINDOW_WIDTH, self.WINDOW_HEIGHT - 40, 6)
-        
+
         biome_config = BIOME_CONFIGS.get(self.current_biome)
         biome_name = biome_config.name if biome_config else "???"
-        
+
         info_text = f"REGION: {self.player.x // 100}:{self.player.y // 100} | BIOME: {biome_name} | LVL: {self.player.level} | GOLD: {self.player.gold}"
         self.engine.text(20, self.WINDOW_HEIGHT - 30, info_text, 6)
 

@@ -26,8 +26,8 @@ class ProceduralEnemyGenerator:
             "Minotaur",
         ]
         self.color_variants = [
-            8,   # Red
-            9,   # Orange
+            8,  # Red
+            9,  # Orange
             10,  # Yellow
             11,  # Green
             12,  # Blue
