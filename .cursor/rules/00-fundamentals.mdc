@@ -1,0 +1,65 @@
+---
+description: Fundamental rules for Rivers of Reckoning development
+globs: "**/*"
+alwaysApply: true
+---
+
+# Fundamentals - Rivers of Reckoning
+
+## 🌊 Project Identity
+
+**Rivers of Reckoning** is a web-first procedural roguelike RPG. Players explore infinite generated worlds directly in their browser.
+
+### Core Constraints
+
+1. **Web-First**: Browser is primary. No desktop-only features.
+2. **One Entry Point**: `main.py` only. No alternate entry points.
+3. **Async Always**: All code pygbag-compatible (async/await).
+4. **Responsive**: Auto-scales to any screen via `pygame.SCALED`.
+5. **Procedural**: No hardcoded content. Everything from seeds.
+
+### Tech Stack
+
+- pygame-ce + pygbag for web deployment
+- opensimplex for procedural generation
+- esper for ECS architecture
+
+## Before Acting
+
+1. **Read before modifying** - Always read the file/code before editing
+2. **Run builds after changes** - Verify with `pytest` and `flake8`
+3. **Check git status** - Know what you're committing
+4. **Test the game** - Run `python main.py` to verify
+
+## Making Changes
+
+1. **One concern per commit** - Keep commits focused
+2. **Run linters/tests locally** before pushing
+3. **Don't consolidate code** without verifying the build
+4. **Keep it async** - No blocking patterns
+
+## Quick Commands
+
+```bash
+python main.py          # Run game
+pytest -v               # Run tests
+flake8 src/             # Lint
+python -m pygbag .      # Build for web
+```
+
+## Authentication
+
+```bash
+# jbcom repos - ALWAYS use this pattern
+GH_TOKEN="$GITHUB_TOKEN" gh <command>
+```
+
+## Session Management
+
+```bash
+# Start of session
+cat memory-bank/activeContext.md 2>/dev/null || echo "No memory bank"
+
+# End of session - update context
+echo "## Session: $(date +%Y-%m-%d)" >> memory-bank/activeContext.md
+```

@@ -1,0 +1,17 @@
+# Render.com deployment configuration for Rivers of Reckoning
+# Builds the game using Vite for web deployment
+
+services:
+  - type: web
+    name: rivers-of-reckoning
+    env: static
+    buildCommand: |
+      # Setup pnpm
+      npm install -g pnpm
+      
+      # Install dependencies
+      pnpm install
+      
+      # Build for web
+      pnpm run build
+    staticPublishPath: ./dist
